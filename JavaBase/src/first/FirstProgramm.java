@@ -487,6 +487,7 @@ public class FirstProgramm {
 		String[] DVDName = { "变形金刚", "黑客帝国", "电锯惊魂" };
 		boolean[] state = { false, true, false };
 		String[] date = { "2017/03/23", "2017/04/23", "2017/05/03" };
+		boolean[] delState = {false, false, false};
 
 		while (true) {
 
@@ -499,9 +500,10 @@ public class FirstProgramm {
 				// 序号 名称 是否被借出 借出时间
 				System.out.println("序号\t\t名称\t\t是否被借出\t\t借出时间");
 				for (int i = 0; i < NumberID.length; i++) {
-					System.out.println(NumberID[i] + "\t\t" + DVDName[i] + "\t\t" + state[i] + "\t\t" + date[i]);
+					if (!delState[i]) {
+						System.out.println(NumberID[i] + "\t\t" + DVDName[i] + "\t\t" + state[i] + "\t\t" + date[i]);
+					}
 				}
-
 				break;
 			case 2:
 				// 增加
