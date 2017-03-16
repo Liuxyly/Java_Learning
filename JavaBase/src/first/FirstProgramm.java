@@ -370,34 +370,34 @@ public class FirstProgramm {
 		// System.out.print(tmp + " ");
 		// }
 
-		// int arr[]={2,6,5,4,9};
-		// bubbleSort(arr);
+		// int scores[]={2,6,5,4,9};
+		// bubbleSort(scores);
 
-		// int[][] arr1 = {{12, 23, 34, 45}, {12, 23, 34, 67}, {12, 23, 34,
+		// int[][] scores1 = {{12, 23, 34, 45}, {12, 23, 34, 67}, {12, 23, 34,
 		// 56}};
-		// System.out.println(arr1.length);
-		// System.out.println(arr1[0].length);
+		// System.out.println(scores1.length);
+		// System.out.println(scores1[0].length);
 		//
 		// for (int i = 0, j = 0;; j++) {
 		//
-		// if (j == arr1[i].length) {
+		// if (j == scores1[i].length) {
 		// j = 0;
 		// i++;
 		// }
-		// if (i < arr1.length) {
-		// System.out.print(arr1[i][j]);
+		// if (i < scores1.length) {
+		// System.out.print(scores1[i][j]);
 		// }else{
 		// break;
 		// }
 		//
 		// }
 
-		// int[] arr1 = {12, 23, 34};
-		// int [] arr2 = null;
+		// int[] scores1 = {12, 23, 34};
+		// int [] scores2 = null;
 
-		// printArray(arr);
+		// printscoresay(scores);
 
-		// Arrays.sort(arr);
+		// scoresays.sort(scores);
 
 		// double [] moneys = new double[5];
 		// double money = 0.0;
@@ -471,82 +471,174 @@ public class FirstProgramm {
 //			// 输入一个数据
 //			System.out.print("请输入数字：");
 //			a[i] = input.nextInt();
-//			a = Arrays.copyOf(a, a.length + 1);
+//			a = scoresays.copyOf(a, a.length + 1);
 //			i++;
 //
 //			System.out.print("是否继续（y/n） ");
 //			// 询问是否继续输入
 //		} while (input.next().equals("y"));
 //
-//		printArray(a, 0, a.length - 1);
-
-		// ------------------ ----------------------
-
-		int _caseNumber = 0;
-		int[] NumberID = { 1, 2, 3 };
-		String[] DVDName = { "变形金刚", "黑客帝国", "电锯惊魂" };
-		boolean[] state = { false, true, false };
-		String[] date = { "2017/03/23", "2017/04/23", "2017/05/03" };
-		boolean[] delState = {false, false, false};
-
+//		printscoresay(a, 0, a.length - 1);
+		
+		//作业1
+//		double [] monays = new double[4];
+//		System.out.println("请输入4家店的价格");
+//		
+//		for (int i = 0; i < monays.length; i++) {
+//			System.out.print("第" + (i + 1) + "店的价格：");
+//			monays[i] = input.nextInt();
+//		}
+//		
+//		double min = monays[0];
+//		
+//		for (int i = 0; i < monays.length; i++) {
+//			if (monays[i] < min){
+//				min = monays[i];
+//			}
+//		}
+//		
+//		System.out.println("最低价格是：" + min);
+		
+		
+		//作业2
+//		int [] scores = new int[5];
+//		System.out.println("请输入5名学员的成绩：");
+//		for (int i = 0; i < scores.length; i++) {
+//			scores[i] = input.nextInt();
+//		}
+//		
+//		// 定义比较的次数,次数为数组长度-1
+//		int temp = 0;
+//		int times = scores.length - 1;
+//		for (int i = 0; i < times; i++) {
+//			if (scores[i] < scores[i + 1]) {
+//				temp = scores[i];
+//				scores[i] = scores[i + 1];
+//				scores[i + 1] = temp;
+//			}
+//			// 关键点:判断是否是最后一次比较，若是，那么重制变量i
+//			if (i == times - 1) {
+//				i = -1;		// i重置为-1，随后for循环会自动++,因此下次比较时i值为0
+//				times--;	// 比较次数递减1
+//			}
+//		}
+//		
+//		System.out.print("学员的成绩按降序排列：");
+//		for (int score:scores) {
+//			System.out.print(score + "\t");
+//		}
+		
+		//作业3
+		char [] chars = new char[5];
+		String tmp = null;
+		System.out.println("请输入5个字符：");
+		for (int i = 0; i < chars.length; i++) {
+			tmp = input.next();
+			if (tmp.length() > 1) {
+				System.out.println("请重新输入");
+				i--;
+			}else{
+				chars[i] = tmp.charAt(0);
+			}	
+		}
+		
+		Arrays.sort(chars);
+		
+		tmp = null;
+		char searchKey;
+		int index = 0;
+		
 		while (true) {
-
-			System.out.print("请输入数字：");
-			_caseNumber = input.nextInt();
-
-			switch (_caseNumber) {
-			case 1:
-				// 查询
-				// 序号 名称 是否被借出 借出时间
-				System.out.println("序号\t\t名称\t\t是否被借出\t\t借出时间");
-				for (int i = 0; i < NumberID.length; i++) {
-					if (!delState[i]) {
-						System.out.println(NumberID[i] + "\t\t" + DVDName[i] + "\t\t" + state[i] + "\t\t" + date[i]);
-					}
+			System.out.print("请输入需要查找的字符：");
+			tmp = input.next();
+			
+			if (tmp.length() > 1) {
+				System.out.println("请重新输入");
+			}else{
+				searchKey = tmp.charAt(0);
+				index = Arrays.binarySearch(chars, searchKey);
+				
+				if (index < 0 || index > chars.length - 1 ) {
+					System.out.println("没有找到");
+				}else{
+					System.out.println("您所查找的字符在" + (index + 1));
 				}
-				break;
-			case 2:
-				// 增加
-
-				break;
-			case 3:
-				// 删除
-
-				break;
-			case 4:
-				// 更改
-
-				break;
-			case 5:
-				// 续借
-
-				break;
-			case 6:
-				// 归还
-
-				break;
-			default:
+			}
+			System.out.print("是否继续(y/n):");
+			if (!input.next().equals("y")) {
 				break;
 			}
 		}
+		
+		
+		
+		
+
+		// ------------------ ----------------------
+
+//		int _caseNumber = 0;
+//		int[] NumberID = { 1, 2, 3 };
+//		String[] DVDName = { "变形金刚", "黑客帝国", "电锯惊魂" };
+//		boolean[] state = { false, true, false };
+//		String[] date = { "2017/03/23", "2017/04/23", "2017/05/03" };
+//
+//		while (true) {
+//
+//			System.out.print("请输入数字：");
+//			_caseNumber = input.nextInt();
+//
+//			switch (_caseNumber) {
+//			case 1:
+//				// 查询
+//				// 序号 名称 是否被借出 借出时间
+//				System.out.println("序号\t\t名称\t\t是否被借出\t\t借出时间");
+//				for (int i = 0; i < NumberID.length; i++) {
+//					System.out.println(NumberID[i] + "\t\t" + DVDName[i] + "\t\t" + state[i] + "\t\t" + date[i]);
+//				}
+//
+//				break;
+//			case 2:
+//				// 增加
+//
+//				break;
+//			case 3:
+//				// 删除
+//
+//				break;
+//			case 4:
+//				// 更改
+//
+//				break;
+//			case 5:
+//				// 续借
+//
+//				break;
+//			case 6:
+//				// 归还
+//
+//				break;
+//			default:
+//				break;
+//			}
+//		}
 
 		// ----------------------------- end of program --------------------------------
 	}
 
-	private static void printArray(int[] arr, int from, int to) {
+	private static void printscoresay(int[] scores, int from, int to) {
 		for (int i = from; i < to; i++) {
-			System.out.print(arr[i] + " ");
+			System.out.print(scores[i] + " ");
 		}
 	}
 
-	private static void bubbleSort(int[] arr) {
+	private static void bubbleSort(int[] scores) {
 		// 定义比较的次数,次数为数组长度-1
-		int times = arr.length - 1;
+		int times = scores.length - 1;
 		for (int i = 0; i < times; i++) {
-			if (arr[i] > arr[i + 1]) {
-				int temp = arr[i];
-				arr[i] = arr[i + 1];
-				arr[i + 1] = temp;
+			if (scores[i] > scores[i + 1]) {
+				int temp = scores[i];
+				scores[i] = scores[i + 1];
+				scores[i + 1] = temp;
 			}
 			// 关键点:判断是否是最后一次比较，若是，那么充值变量
 			if (i == times - 1) {
