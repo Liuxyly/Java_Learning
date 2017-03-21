@@ -11,6 +11,7 @@ public class DVDManager {
 		input = new Scanner(System.in);
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		Date today = new Date();
+		
 		int _caseNumber = 0;
 		String[] DVDName = { "变形金刚", "黑客帝国", "电锯惊魂" };
 		boolean[] states = { false, true, false };
@@ -87,6 +88,8 @@ public class DVDManager {
 					// 增加
 					System.out.print("请输入要添加的DVD名：");
 					nameTemp = input.next();
+					addflag = true;
+					
 					for (String DVDN : DVDName) {
 						if (nameTemp.equals(DVDN)) {
 							addflag = false;
@@ -111,7 +114,6 @@ public class DVDManager {
 					date[DVDName.length - 1]		= null;
 					delOrNot[DVDName.length - 1] 	= false;
 					System.out.println("\t添加成功");
-//					}
 					
 					System.out.println("*******************");
 					System.out.println("输入0返回");
@@ -315,7 +317,6 @@ public class DVDManager {
 					        try {
 								cal.setTime(format.parse(format.format(today)));
 							} catch (ParseException e) {
-								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
 					        long time1 = cal.getTimeInMillis();
@@ -323,12 +324,11 @@ public class DVDManager {
 					        try {
 								cal.setTime(format.parse(date[rNumber]));
 							} catch (ParseException e) {
-								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
 					        long time2 = cal.getTimeInMillis();
 					        
-					        long between_days=(time1 - time2)/(1000*3600*24);
+					        long between_days=(time1 - time2 + 1)/(1000*3600*24);
 					            
 					        System.out.println("DVD已归还");
 					        System.out.println("一共" + Integer.parseInt(String.valueOf(between_days)) + "元");
