@@ -30,7 +30,8 @@
                 	<a href="login">登录</a>
                 </div>
             </div>
-        	<form action="UserAuthenticate?opr=add" method="post">
+        	<form action="UserAuthenticate" method="post">
+        		<input type="hidden" name="opr" value="add"/>
 	       		<div class="er2">
 	        		<p>
 	        			<span>手 机 号：</span>
@@ -42,11 +43,11 @@
 	           		</p>
 	            	<p>
 	            		<span>密&nbsp;&nbsp; &nbsp;码：</span>
-	            		<input name="newuserpwd" type="text" id="Er21" placeholder="6-18位数字" />
+	            		<input name="newuserpwd" type="password" id="Er21" placeholder="6-18位数字" />
 	            	</p>
 	           		<p>
 	           			<span class="er22">确认密码：</span>
-	           			<input type="text" id="Er21" placeholder="再次确认密码" />
+	           			<input type="password" id="Er21" placeholder="再次确认密码" />
 	           		</p>
 	            	<p class="er23">
 	            		<input type="checkbox" id="er24"/>

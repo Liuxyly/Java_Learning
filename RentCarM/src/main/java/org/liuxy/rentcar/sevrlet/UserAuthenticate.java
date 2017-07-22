@@ -11,6 +11,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.liuxy.rentcar.entity.AdminUser;
 import org.liuxy.rentcar.entity.NormalUser;
+import org.liuxy.rentcar.entity.Order;
 import org.liuxy.rentcar.service.AdminUserService;
 import org.liuxy.rentcar.service.NormalUserService;
 import org.liuxy.rentcar.service.OrderService;
@@ -50,7 +51,7 @@ public class UserAuthenticate extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// request.setCharacterEncoding("UTF-8"); Filter 过滤所有URL 并执行了该代码
 		
-		String opr = (String)request.getAttribute("opr");
+		String opr = (String)request.getParameter("opr");
 		
 		if (opr.equals("add")) {
 			add(request, response);
@@ -105,8 +106,8 @@ public class UserAuthenticate extends HttpServlet {
 			httpSession.setAttribute("message", "Error");
 			response.sendRedirect("admin/login.jsp");
 		} else {
-			httpSession.setAttribute("orderList", orderService);
-			httpSession.setAttribute("UserInfo", userInfo);
+			httpSession.setAttribute("orderList", orderService.listOrders());
+			httpSession.setAttribute("adminUser", userInfo);
 			response.sendRedirect("admin/index.jsp");
 		}
 	}
@@ -127,7 +128,7 @@ public class UserAuthenticate extends HttpServlet {
 			httpSession.setAttribute("message", "Error");
 			response.sendRedirect("login.jsp");
 		} else {
-			httpSession.setAttribute("UserInfo", userInfo);
+			httpSession.setAttribute("normalUser", userInfo);
 			response.sendRedirect("index.jsp");
 		}
 	}
@@ -147,8 +148,10 @@ public class UserAuthenticate extends HttpServlet {
 		httpSession.removeAttribute("message");
 		if (rcNumber > 0) {
 			httpSession.setAttribute("message", "Successful");
+			response.sendRedirect("register.jsp");
 		} else {
 			httpSession.setAttribute("message", "Error");
+			response.sendRedirect("register.jsp");
 		}
 	}
 

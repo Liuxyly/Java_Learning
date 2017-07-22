@@ -19,4 +19,9 @@ public class OrderServiceImpl implements OrderService {
 		return orderDao.findAll();
 	}
 
+	@Override
+	public int confirm(Integer orderState, Integer orderId) {
+		return orderDao.updateOrderState(orderState, orderId);
+	}
+
 }

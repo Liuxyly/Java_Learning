@@ -6,4 +6,5 @@ import org.liuxy.rentcar.entity.Order;
 
 public interface OrderDao {
 	List<Order> findAll();
+	int updateOrderState(Integer orderState, Integer orderId);
 }

@@ -28,11 +28,12 @@
     
 		<div class="log2">
 			<form action="UserAuthenticate" method="post">
+				<input type="hidden" name="opr" value="login"/>
 		    	<div class="log21">
 		        	<span class="L211">
 		        		<strong>欢迎登录</strong>
 		        	</span>
-		        	<a href="register">免费注册</a>
+		        	<a href="register.jsp">免费注册</a>
 		        	<p>
 		        		<span>账号：</span>
 		        		<input name="userName" type="text" id="Er21" placeholder="手机号/QQ/邮箱" />

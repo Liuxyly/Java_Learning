@@ -170,12 +170,8 @@
 	margin-top: 45px;
 }
 
-#tx1 {
-	width: 42px;
-}
-
-#tx2 {
-	width: 27px;
+.tx1, .tx2 {
+	width: 100px;
 }
 
 .Money {
@@ -573,4 +569,8 @@ div.image {
 
 div.info {
 	float: left;
+}
+
+.inlineBlock {
+	display: inline-block;
 }

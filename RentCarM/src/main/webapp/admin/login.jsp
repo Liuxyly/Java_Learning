@@ -21,13 +21,14 @@
    	</div> <br/>
     <div class="Case1">
     	<div class="Case2">
-    	<form action="UserAuthenticate" method="post"></form>
-        	<div class="entry">
-        		<input name="opr" type="hidden" value="adminLogin">
-            	<p>账号：<input name="adminName" type="text" id="Er21"/></p>
-                <p>密码：<input name="adminPwd" type="password" id="Er21"/></p>
-                <p><input type="submit" class="L213" value="登 录"/></p>
-            </div>      
+    		<form action="UserAuthenticate" method="post">
+	        	<div class="entry">
+	        		<input name="opr" type="hidden" value="adminLogin">
+	            	<p>账号：<input name="adminName" type="text" id="Er21"/></p>
+	                <p>密码：<input name="adminPwd" type="password" id="Er21"/></p>
+	                <p><input type="submit" class="L213" value="登 录"/></p>
+	            </div>
+            </form>    
         </div>
     </div>
 </body>

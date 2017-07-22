@@ -1,12 +1,11 @@
 <%@ page language="java" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%
 	String path = request.getContextPath();
 	String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path + "/";
 %>
-<%
-	
-%>
+<%@include file="validateAdminUser.jsp" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -26,9 +25,11 @@
     <div class="Case1">
     	<div class="Case2">
         	<div class="Or1">
-            	<span class="Or11">订单中心</span> &nbsp;&nbsp;&nbsp; * 订单号：
-            	<form action="">
-            		<input name="orderId" type="text" value="14407778607661"/>
+            	<span class="Or11">订单中心</span>
+            	<span> &nbsp;&nbsp;&nbsp; * 订单号：</span>
+            	<form action="OrderOprations" class="inlineBlock" method="post">
+            		<input type="hidden" name="opr" value="display"/>
+            		<input name="orderId" type="text" value=""/>
             		<input type="submit"  value="查 询"/>
             	</form>
             </div>
@@ -43,26 +44,40 @@
                     <td><strong>结算</strong></td>
                 </tr>
                 
-                <c:forEach items="${sessionScope.orderList }" var = "order">
+                <c:forEach items= "${sessionScope.orderList}" var = "order">
                 	<tr>
-                		<form action="OrderOprations" method="post">
-                			<input type="hidden" name="opr" value="${order.orderId }"/>
+                		<form action="OrderOprations?orderId=${order.orderId }" method="post">
+                			<input type="hidden" name="opr" value="confirm"/>
 		                	<td><a href="">${order.orderId }</a></td>
-		                    <td>别克凯越/三厢/1.6自动</td>
-		                    <td>${order.getDate }</td>
-		                    <td>${order.reDate }</td>
+		                    <td>${order.carType.cartypeName }</td>
+		                    <td><fmt:formatDate value="${order.getDate }" pattern="yyyy/MM/dd"/></td>
+		                    <td><fmt:formatDate value="${order.reDate }" pattern="yyyy/MM/dd"/></td>
 		                	<td>
-		                		<c:if test="${order.orderState } eq 1">
+		                		<c:if test="${order.orderState eq 1}">
 		                			交易成功
+		                		</c:if>
+		                		<c:if test="${order.orderState eq 2}">
+		                			未付款
+		                		</c:if>
+		                		<c:if test="${order.orderState eq 3}">
+		                			已取消
 		                		</c:if>
 		                	</td>
 		                    <td>¥${order.fee }</td>
-		                    <td><input type="submit" value="确 定" /></td>
+		                    <td><input type="submit" value="确 定" 
+		                    	<c:if test="${order.orderState eq 1 }">
+		                    		disabled="disabled"
+		                    	</c:if>
+		                    	<c:if test="${order.orderState eq 3 }">
+		                    		disabled="disabled"
+		                    	</c:if>
+		                    	/>
+		                   	</td>
 	                    </form>
 	                </tr>
                 </c:forEach>
                 
-                <tr>
+                <!-- <tr>
                 	<td><a href="">14407778607661</a></td>
                     <td>别克凯越/三厢/1.6自动</td>
                     <td>2016/12/20</td>
@@ -88,7 +103,7 @@
                 	<td>已取消</td>
                     <td>¥513</td>
                     <td><input type="submit" value="确 定" disabled="disabled"/></td>
-                </tr>
+                </tr> -->
             </table>
        		<div class="Yj1">
             	当前第1页 <a href="" id="yj11">《上一页></a> <a href="" id="yj11">下一页》</a> 共计10页 到第<input type="text" id="yj12">页 <input type="submit" value="确 定">

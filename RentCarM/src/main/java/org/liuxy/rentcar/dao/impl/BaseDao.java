@@ -63,10 +63,10 @@ public class BaseDao {
 					this.preparedStatement.setObject((j), parameters[i]);
 				}
 			}
-			int i = 0;
-			for (Object object : parameters) {
-				this.preparedStatement.setObject((i + 1), object);
-			}
+//			int i = 0;
+//			for (Object object : parameters) {
+//				this.preparedStatement.setObject((i + 1), object);
+//			}
 			
 			rowNumber = this.preparedStatement.executeUpdate();
 		} catch (SQLException e) {

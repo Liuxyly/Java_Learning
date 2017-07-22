@@ -6,4 +6,5 @@ import org.liuxy.rentcar.entity.Order;
 
 public interface OrderService {
 	List<Order> listOrders();
+	int confirm(Integer orderState, Integer orderId);
 }

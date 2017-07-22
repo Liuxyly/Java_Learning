@@ -10,23 +10,25 @@ import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 
 /**
- * Servlet Filter implementation class encodingFilter
+ * Servlet Filter implementation class EncodingFilter
  */
-@WebFilter("/*")
-public class encodingFilter implements Filter {
+@WebFilter(filterName="encodingFilter",urlPatterns="/*")
+public class EncodingFilter implements Filter {
 	
 	private String ENCODE = "UTF-8";
 	
     /**
      * Default constructor. 
      */
-    public encodingFilter() {
+    public EncodingFilter() {
+    	
     }
 
 	/**
 	 * @see Filter#destroy()
 	 */
 	public void destroy() {
+		
 	}
 
 	/**
@@ -34,10 +36,9 @@ public class encodingFilter implements Filter {
 	 */
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 		
-		
-		
 		request.setCharacterEncoding(ENCODE);
-		response.setContentType("text/html;charset="+ ENCODE);
+		// response.setContentType("text/html;charset="+ ENCODE);
+		response.setCharacterEncoding(ENCODE);
 		
 		chain.doFilter(request, response);
 	}
@@ -48,5 +49,5 @@ public class encodingFilter implements Filter {
 	public void init(FilterConfig fConfig) throws ServletException {
 		// ENCODE = fConfig.getInitParameter("CharSet");
 	}
-
+	
 }

@@ -9,8 +9,17 @@
 <base href="<%=basePath %>">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>交易</title>
+<link rel="stylesheet" href="css/datedropper.css">
 </head>
 <link type="text/css" rel="stylesheet" href="css/carCSS.css" />
+<script type="text/javascript" src="js/jquery.min.js" ></script>
+<script type="text/javascript" src="js/datedropper.min.js" ></script>
+<script type="text/javascript">
+	$(function () {
+		$(".tx1").dateDropper({format: 'y年m月d日', color: '#66c8bba', animation: 'bounce', lock: 'from', maxYear: 2030});
+		$(".tx2").dateDropper({format: 'y年m月d日', color: '#66c8bba', animation: 'bounce', lock: 'to', maxYear: 2030});
+	});
+</script>
 <body>
 	<div class="Log1" align="right">
     	<a href="index">回到首页</a> | 
@@ -45,21 +54,11 @@
 	            <div class="tr2">
 	            	<p>
 	            		<span>取车时间：</span>
-	            		<input type="text" id="tx1"/>
-	            		<span>年</span>
-	            		<input type="text" id="tx2"/>
-	            		<span>月</span>
-	            		<input type="text" id="tx2"/>
-	            		<span>日</span>
+	            		<input name="getDate" type="text" class="tx1">
 	            	</p>
 	                <p>
 	                	<span>还车时间：</span>
-	                	<input type="text" id="tx1"/>
-	                	<span>年</span>
-	                	<input type="text" id="tx2"/>
-	                	<span>月</span>
-	                	<input type="text" id="tx2"/>
-	                	<span>日</span>
+	                	<input name="retDate" type="text" class="tx1">
 	                </p>
 	                <p>
 	                	<span>取车地点：</span>
