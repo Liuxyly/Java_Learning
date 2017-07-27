@@ -73,6 +73,8 @@ function brandNameChange() {
 	
 }
 
+
+
 function delCatInfo(index, carId, selectObj) {
 	
 	alert(index, carId + $(selectObj).val())

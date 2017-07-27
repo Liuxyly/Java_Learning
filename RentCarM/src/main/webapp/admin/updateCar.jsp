@@ -15,6 +15,17 @@
 <link type="text/css" rel="stylesheet" href="css/carCSS.css"/>
 <script type="text/javascript" src="js/jquery.min.js"></script>
 <script type="text/javascript" src="js/main.js"></script>
+<script type="text/javascript">
+	$(function(){
+		$("#delOneRow").click(function() {
+			if (confirm("确认删除?")) {
+				delCatInfo(index, carId, selectObj);
+				
+				$(this).parent().parent().remove();
+			}
+		});
+	});
+</script>
 <body>
 	<div class="Log1" align="right">
     	<a href="首页.html">回到首页</a> | 
@@ -60,7 +71,7 @@
 	                    <td>${carInfo.discount }</td>
 	                    <td>
 	                    	<a href="CarInfoServlet?opr=alterCarInfoCon&carInfoId=${carInfo.carId}">更新</a>
-	                    	<input type="button" onclick='delCatInfo(${index}, ${carInfo.carId }, this)' value="删除"/>
+	                    	<input type="button" id = "delOneRow" value="删除"/>
 	                    </td>
 	                </tr>
                 </c:forEach>
