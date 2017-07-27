@@ -113,7 +113,6 @@ function addCarTypeName() {
 				$.each(data, function(index, carType) {
 					$("#cartypeName").append($("<option value='"+ carType.cartypeId +"' >" + carType.cartypeName +"</option>"));
 					if ($(".inCarTypeName").val() == carType.cartypeName) {
-						alert("输入了重复的车辆型号");
 						tmp = carType.cartypeId;
 						flag = true;
 					}
