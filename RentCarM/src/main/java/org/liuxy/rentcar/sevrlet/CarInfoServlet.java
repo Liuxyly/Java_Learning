@@ -108,6 +108,20 @@ public class CarInfoServlet extends HttpServlet {
 		carType.setBrand(brand);
 		
 		CarTypeService carTypeService = new CarTypeServiceImpl();
+		
+		boolean flag = true;
+		
+		List<CarType> list = carTypeService.getCarTypeOptionsByBrandID(brandIDVal);
+		
+		for (CarType carType2 : list) {
+			if(carType2.getCartypeName().equals(carTypeNameVal)) {
+				flag = false;
+			}
+		}
+		if (flag) {
+			carTypeService.addCarType(carType);
+		}
+		
 		PrintWriter out = response.getWriter();
 		
 		String carTypeString = JSONArray.toJSONString(carTypeService.getCarTypeOptionsByBrandID(brandIDVal));
@@ -271,7 +285,7 @@ public class CarInfoServlet extends HttpServlet {
 				
 				for (int i = 0; i < carInfos.size(); i++) {
 					if(carInfos.get(i).getCarId() == carInfo.getCarId()){
-						carInfos.set(i, carInfo);
+						carInfos.set(i, carInfoService.findCarInfoByCarId(carInfo.getCarId()));
 					}
 				}
 				
