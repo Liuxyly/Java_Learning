@@ -13,7 +13,7 @@
 </head>
 <body>
 	<div class="Log1" align="right">
-    	<a href="index">回到首页</a>
+    	<a href="index.jsp">回到首页</a>
     	<span> | </span>
         <a href="admin/login.jsp">管理员登录</a>
         <span> | </span>
@@ -25,7 +25,6 @@
     	<span>Easy-Car</span>
     	<strong>神牛租车</strong>
     </div>
-    
 		<div class="log2">
 			<form action="UserAuthenticate" method="post">
 				<input type="hidden" name="opr" value="login"/>

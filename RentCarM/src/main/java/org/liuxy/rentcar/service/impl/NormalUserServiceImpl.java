@@ -1,5 +1,6 @@
 package org.liuxy.rentcar.service.impl;
 
+import org.liuxy.rentcar.dao.NormalUserDao;
 import org.liuxy.rentcar.dao.UserDao;
 import org.liuxy.rentcar.dao.impl.NormalUserDaoImpl;
 import org.liuxy.rentcar.entity.NormalUser;
@@ -32,5 +33,10 @@ public class NormalUserServiceImpl implements NormalUserService {
 	@Override
 	public int alterUser(User user) {
 		return userDao.updateUser(user);
+	}
+
+	@Override
+	public User verifyUser(String userName) {
+		return ((NormalUserDao)userDao).getUser(userName);
 	}
 }

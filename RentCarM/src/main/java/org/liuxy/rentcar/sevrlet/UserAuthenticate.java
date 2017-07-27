@@ -1,6 +1,8 @@
 package org.liuxy.rentcar.sevrlet;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -11,11 +13,14 @@ import javax.servlet.http.HttpSession;
 import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.liuxy.rentcar.entity.AdminUser;
 import org.liuxy.rentcar.entity.NormalUser;
-import org.liuxy.rentcar.entity.Order;
 import org.liuxy.rentcar.service.AdminUserService;
+import org.liuxy.rentcar.service.BrandService;
+import org.liuxy.rentcar.service.CarInfoService;
 import org.liuxy.rentcar.service.NormalUserService;
 import org.liuxy.rentcar.service.OrderService;
 import org.liuxy.rentcar.service.impl.AdminUserServiceImpl;
+import org.liuxy.rentcar.service.impl.BrandServiceImpl;
+import org.liuxy.rentcar.service.impl.CarInfoServiceImpl;
 import org.liuxy.rentcar.service.impl.NormalUserServiceImpl;
 import org.liuxy.rentcar.service.impl.OrderServiceImpl;
 
@@ -30,6 +35,7 @@ public class UserAuthenticate extends HttpServlet {
 	private static final String SALT = "QWERT";
 	private NormalUserService normalUserService = new NormalUserServiceImpl();
 	private AdminUserService adminUserService = new AdminUserServiceImpl();
+	private PrintWriter out;
 	
     /**
      * @see HttpServlet#HttpServlet()
@@ -53,20 +59,53 @@ public class UserAuthenticate extends HttpServlet {
 		
 		String opr = (String)request.getParameter("opr");
 		
-		if (opr.equals("add")) {
-			add(request, response);
-		}
-		if (opr.equals("login")) {
-			login(request, response);
-		}
-		if (opr.equals("adminLogin")) {
-			adminLogin(request, response);
-		} 
-//		if (opr.equals("addAdmin")) {
-//			addAdmin(request, response);
+//		if (opr.equals("add")) {
+//			add(request, response);
 //		}
+//		if (opr.equals("login")) {
+//			login(request, response);
+//		}
+//		if (opr.equals("adminLogin")) {
+//			adminLogin(request, response);
+//		} 
+//		if (opr.equals("addAdmin")) {
+//		addAdmin(request, response);
+//	}
+		switch (opr) {
+		case "add":
+			add(request, response);
+			break;
+		case "login":
+			login(request, response);
+			break;
+		case "adminLogin":
+			adminLogin(request, response);
+			break;
+		case "verifyUser":
+			verifyUser(request, response);
+			break;
+		default:
+			break;
+		}
+
+	}
+	
+	protected void verifyUser(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		String userName = request.getParameter("userName");
+		out = response.getWriter();
 		
-		
+		if (userName != null && !userName.equals("")) {
+			NormalUser normalUser = (NormalUser) normalUserService.verifyUser(userName);
+			
+			if (normalUser != null) {
+				out.print("true");
+			} else {
+				out.print("false");
+			}
+		} else {
+			out.print("false");
+		}
+		out.close();
 	}
 	
 	@SuppressWarnings("unused")
@@ -101,12 +140,18 @@ public class UserAuthenticate extends HttpServlet {
 		System.out.println(adminPwd + "////" + value);
 		
 		HttpSession httpSession = request.getSession();
+		
 		OrderService orderService = new OrderServiceImpl();
+		BrandService brandService = new BrandServiceImpl();
+		CarInfoService carInfoService = new CarInfoServiceImpl();
+		
 		if (userInfo == null) {
 			httpSession.setAttribute("message", "Error");
 			response.sendRedirect("admin/login.jsp");
 		} else {
 			httpSession.setAttribute("orderList", orderService.listOrders());
+			httpSession.setAttribute("brandNames", brandService.brandNameOptions());
+			httpSession.setAttribute("carInfos", carInfoService.listAllCarInfo());
 			httpSession.setAttribute("adminUser", userInfo);
 			response.sendRedirect("admin/index.jsp");
 		}
@@ -148,7 +193,7 @@ public class UserAuthenticate extends HttpServlet {
 		httpSession.removeAttribute("message");
 		if (rcNumber > 0) {
 			httpSession.setAttribute("message", "Successful");
-			response.sendRedirect("register.jsp");
+			response.sendRedirect("login.jsp");
 		} else {
 			httpSession.setAttribute("message", "Error");
 			response.sendRedirect("register.jsp");

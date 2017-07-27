@@ -20,8 +20,8 @@ public class OrderDaoImpl extends BaseDao implements OrderDao {
 	@Override
 	public List<Order> findAll() {
 		List<Order> list = new ArrayList<Order>();
-		String sql = "SELECT orderId, carId, getDate, reDate, getAddress, reAddress, fee, orderState, userid, c.cartypeId as typeid, cartypeName "
-					+" FROM RentCar.`Order` as o, `CarType` as c WHERE c.cartypeId = o.cartypeId";
+		String sql = "SELECT orderId, c.carId as carID, getDate, reDate, getAddress, reAddress, fee, orderState, userid, t.cartypeId as typeid, cartypeName"
+					+" FROM `Order` as o, CarInfo as c, CarType as t WHERE c.carId = o.carId and t.cartypeId = c.cartypeId";
 		ResultSet rs = this.dataQuery(sql);
 		
 		try {
@@ -34,7 +34,7 @@ public class OrderDaoImpl extends BaseDao implements OrderDao {
 				order = new Order();
 				order.setOrderId(rs.getInt("orderId"));
 				carInfo = new CarInfo();
-				carInfo.setCarId(rs.getInt("carId"));
+				carInfo.setCarId(rs.getInt("carID"));
 				order.setCarInfo(carInfo);
 				order.setGetDate(rs.getDate("getDate"));
 				order.setReDate(rs.getDate("reDate"));

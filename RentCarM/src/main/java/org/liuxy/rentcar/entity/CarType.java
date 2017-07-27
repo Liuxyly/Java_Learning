@@ -44,19 +44,16 @@ public class CarType {
 	}
 
 	/**
-	 * @return the brond
+	 * @return the brand
 	 */
-	public Brand getBrond() {
+	public Brand getBrand() {
 		return brand;
 	}
 
 	/**
-	 * @param brand the brond to set
+	 * @param brand the brand to set
 	 */
-	public void setBrond(Brand brand) {
+	public void setBrand(Brand brand) {
 		this.brand = brand;
 	}
-	
-	
-	
 }

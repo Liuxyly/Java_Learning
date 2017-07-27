@@ -16,9 +16,32 @@
 <script type="text/javascript" src="js/datedropper.min.js" ></script>
 <script type="text/javascript">
 	$(function () {
-		$(".tx1").dateDropper({format: 'y年m月d日', color: '#66c8bba', animation: 'bounce', lock: 'from', maxYear: 2030});
-		$(".tx2").dateDropper({format: 'y年m月d日', color: '#66c8bba', animation: 'bounce', lock: 'to', maxYear: 2030});
+		$(".date").dateDropper({format: 'y年m月d日', color: '#66c8bba', animation: 'bounce', maxYear: 2030});
+		updateDays(0);
 	});
+	
+	var toDate = function () {
+		var getDateString = document.getElementsByClassName("tx1")[0].value.replace(/[年月日]/g, "-").substr(0, 10);
+		var reDateString = document.getElementsByClassName("tx2")[0].value.replace(/[年月日]/g, "-").substr(0, 10);
+		if (getDateString == "" || reDateString == "") {
+			return;
+		}
+		
+		var _getDate = new Date(getDateString);
+		var _reDate = new Date(reDateString);
+		
+		if (_getDate > _reDate) {
+			alert("取车时间和还车时间不正确");
+		} else if (_getDate = _reDate) {
+			
+		}
+		updateDays((_reDate.getTime() - _getDate.getTime()) / 86400000);
+	}
+	
+	var updateDays = function (days) {
+		document.getElementById( "days" ).innerHTML = days;
+	}
+	
 </script>
 <body>
 	<div class="Log1" align="right">
@@ -54,11 +77,11 @@
 	            <div class="tr2">
 	            	<p>
 	            		<span>取车时间：</span>
-	            		<input name="getDate" type="text" class="tx1">
+	            		<input name="getDate" type="text" class=" date tx1" onchange="toDate()">
 	            	</p>
 	                <p>
 	                	<span>还车时间：</span>
-	                	<input name="retDate" type="text" class="tx1">
+	                	<input name="retDate" type="text" class="date tx2" onchange="toDate()">
 	                </p>
 	                <p>
 	                	<span>取车地点：</span>
@@ -69,7 +92,7 @@
 	                	<input type="text" value="大连"/>
 	                </p>
 	                <p>
-	                	<span>租 赁 费：220 × 2 = &yen; </span>
+	                	<span>租 赁 费：<span name="unitPrice">220</span> × <span id="days">2</span> = &yen; </span>
 	                	<span class="Money">440</span>
 	                </p>
 	                <p>

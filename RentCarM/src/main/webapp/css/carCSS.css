@@ -125,13 +125,13 @@
 }
 
 .er2 {
-	width: 300px;
+	width: 600px;
 	height: 270px;
 	line-height: 30px;
 	margin: 100px 275px 0 310px;
 }
 
-#Er21 {
+#phonenumber, #newusername, #newuserpwd, #confirm_password {
 	height: 22px;
 	font-size: 15px;
 	color: #000;
@@ -145,7 +145,9 @@
 	font-size: 16px;
 	margin-left: 8px;
 }
-
+.error {
+	color:red;
+}
 /*交易样式*/
 .tr1 {
 	border: #000 solid 1px;
@@ -270,9 +272,10 @@
 
 /*添加车辆*/
 .ps1 {
-	width: 600px;
+	width: 650px;
 	height: 300px;
 	margin-left: 180px;
+	position: relative;
 }
 
 /*首页样式*/
@@ -574,3 +577,293 @@ div.info {
 .inlineBlock {
 	display: inline-block;
 }
+
+.addNewbrandName {
+	display: none;
+	position: absolute;
+	left: 260px;
+	top: 6px;
+	height: 50px;
+	width: 250px;
+	background: #666;
+}
+
+.addNewCarType {
+	display: none;
+	position: absolute;
+	left: 260px;
+	top: 26px;
+	height: 50px;
+	width: 250px;
+	background: #666;
+}
+
+@CHARSET "UTF-8";
+/* CSS Document */
+*{
+	margin:0;
+	padding:0;
+	}
+body{
+	/*border:1px #FF0000 solid;*/
+	width:1600px;
+	margin:0px auto;
+	}
+li{
+	list-style:none;
+	}
+/*------------------------------------------------------------*/
+nav{
+	/*border:1px #000000 solid;*/
+	height:22px;
+	font-size:18px;
+	font-family:"Times New Roman","瀹嬩綋";
+	}
+nav div:first-of-type{
+	float:left;
+	}
+nav div:last-of-type{
+	float:right;
+	margin-right:50px;
+	}
+nav div:last-of-type span{
+	font-weight:bold;
+	}
+nav:after{
+	content:'';        
+	display:block;
+	clear:both;
+}
+/*------------------------------------------------------------*/
+#logo{
+	border:2px #000 solid;
+	height:120px;
+	line-height:120px;
+	padding-left:30px;
+	}
+#logo span{
+	font-size:54px;
+	font-family:"Times New Roman","鍗庢枃琛屾シ";
+	color:#39F;
+	}
+/*------------------------------------------------------------*/
+#screen{
+	padding-top:14px;
+	padding-bottom:14px;
+	height:150px;
+	border-left:2px #000 solid;
+	border-right:2px #000 solid;
+	}
+#insideScreen{
+	height:146px;
+	border-top:2px #000 solid;
+	border-bottom:2px #000 solid;
+	padding-left:30px;
+	padding-right:30px;
+	}
+#insideScreen ul{
+	display:inline;
+	}
+#insideScreen ul li{
+	display:inline;
+	}
+/*------------------------------------------------------------*/
+.screenType1{
+	border-left:2px #000 solid;
+	border-right:2px #000 solid;
+	border-bottom:2px #000 dashed;
+	height:47px;
+	width:1290px;
+	}
+.screenType2{
+	border-left:2px #000 solid;
+	border-right:2px #000 solid;
+	border-bottom:2px #000 dashed;
+	height:47px;
+	width:1290px;
+	}
+.screenType3{
+	border-left:2px #000 solid;
+	border-right:2px #000 solid;
+	height:48px;
+	width:1290px;
+	}
+/*------------------------------------------------------------*/
+.screenType1,.screenType2,.screenType3{
+	font-size:22px;
+	line-height:47px;
+	padding-left:80px;
+	}
+#insideScreen div span{
+	font-weight:bold;
+	}
+#insideScreen div ul li{
+	margin-left:60px;
+	}
+#insideScreen div:nth-child(4){
+	border-right:2px #000 solid;
+	border-left:2px #000 solid;
+	padding:20px;
+	height:106px;
+	width:120px;
+	float:right;
+	position:relative;
+	left:0px;
+	top:-146px;
+	}
+#submit1{
+	width:115px;
+	height:110px;
+	background:#06F;
+	font-size:32px;
+	}
+#insideScreen:after{
+	content:'';        
+	display:block;
+	clear:both;
+}
+/*-----------------------------------------------------------*/
+section{
+	border:2px #000 solid;
+	margin-bottom:20px;
+	padding:20px 30px;
+	}
+#insideSection{
+	border:2px #000 solid;
+	padding:20px 30px;
+	}
+#sortDiv{
+	height:24px;
+	border-left:2px #000 solid;
+	border-top:2px #000 solid;
+	border-right:2px #000 solid;
+	}
+#sortDiv div{
+	height:24px;
+	border-right:2px #000 solid;
+	line-height:24px;
+	padding-left:30px;
+	}
+#sortDiv div:nth-of-type(1){
+	width:130px;
+	display:inline;
+	float:left;
+	}
+#sortDiv div:nth-of-type(2){
+	width:170px;
+	display:inline;
+	float:left;
+	}
+#sortDiv div:nth-of-type(3){
+	width:130px;
+	display:inline;
+	float:left;
+	}
+#sortDiv div:nth-of-type(4){
+	width:180px;
+	float:right;
+	position:relative;
+	left:132px;
+	}
+#sortDiv:after{
+	content:'';        
+	display:block;
+	clear:both;
+}
+.car{
+	height:140px;
+	border:2px #000 solid;
+	margin-bottom:20px;
+	position:relative;
+	}
+.car div:nth-of-type(1){
+	/*border:2px #000 solid;*/
+	margin-left:40px;
+	height:136px;
+	width:280px;
+	float:left;
+	}
+.car div:nth-of-type(1) img{
+	display:block;
+	margin:0px auto;
+	padding-top:22px;
+	}
+.car div:nth-of-type(2){
+	/*border:2px #000 solid;*/
+	margin-left:46px;
+	height:136px;
+	width:170px;
+	float:left;
+	}
+.car div:nth-of-type(2) ul{
+	padding-top:24px;
+	}
+.car div:nth-of-type(2) ul li{
+	height:35px;
+	font-size:18px;
+	line-height:18px;
+	}
+.car div:nth-of-type(2) ul li img{
+	vertical-align:middle;
+	}
+.car div:nth-of-type(3){       /*鐑棬鏍囩*/
+	padding-top:20px;
+	float:left;
+	}
+#car3 div:nth-of-type(3){
+	display:none;
+	}
+#car4 div:nth-of-type(3){
+	display:none;
+	}
+.car div:nth-of-type(4){
+	/*border:2px #000 solid;*/
+	height:100px;
+	width:160px;
+	font-size:20px;
+	float:right;
+	position:absolute;
+	left:1120px;
+	top:25px;
+	}
+.car div:nth-of-type(4) span{
+	font-size:46px;
+	color:#39F;
+	}
+.car div:nth-of-type(4) p:nth-of-type(2){
+	margin-left:20px;
+	}
+.submit{
+	border:2px #000 solid;
+	float:right;
+	position:absolute;
+	left:1320px;
+	top:55px;
+	
+	}
+#submit2{
+	width:97px;
+	height:36px;
+	background:#C00 url(../image/homepage/rentButton.png) right center no-repeat;
+	}
+.car:after{
+	content:'';        
+	display:block;
+	clear:both;
+	}
+/*---------------------------------------------------*/
+#pageFoot{
+	/*border:2px #000 solid;*/
+	height:70px;
+	width:660px;
+	margin:0px auto;
+	padding-top:5px;
+	font-size:18px;
+	}
+#pageFoot div{
+	display:inline;
+	margin-left:20px;
+	}
+#pageFoot a{
+	text-decoration:none;
+	}

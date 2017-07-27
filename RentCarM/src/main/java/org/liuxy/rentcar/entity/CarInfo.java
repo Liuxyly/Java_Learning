@@ -1,11 +1,13 @@
 package org.liuxy.rentcar.entity;
 
+import java.io.InputStream;
 import java.math.BigDecimal;
+import java.sql.Blob;
 
 public class CarInfo {
 	
 	private Integer carId;
-	private Brand brand;
+	private CarType carType;
 	private String carJibie;
 	private String carJiegou;
 	private String carPailiang;
@@ -13,12 +15,48 @@ public class CarInfo {
 	private Integer carPeople;
 	private BigDecimal price;
 	private BigDecimal discount;
-	// private Coble imageData;
+	private InputStream imageData;
 	private Integer carState;
 	
 	public CarInfo() {
 		
 	}
+	
+	/**
+	 * @return the imageData
+	 */
+	public InputStream getImageData() {
+		return imageData;
+	}
+
+
+
+	/**
+	 * @param imageData the imageData to set
+	 */
+	public void setImageData(InputStream imageData) {
+		this.imageData = imageData;
+	}
+
+
+
+	/**
+	 * @return the carType
+	 */
+	public CarType getCarType() {
+		return carType;
+	}
+
+
+
+	/**
+	 * @param carType the carType to set
+	 */
+	public void setCarType(CarType carType) {
+		this.carType = carType;
+	}
+
+
 
 	/**
 	 * @return the carId
@@ -32,20 +70,6 @@ public class CarInfo {
 	 */
 	public void setCarId(Integer carId) {
 		this.carId = carId;
-	}
-
-	/**
-	 * @return the brand
-	 */
-	public Brand getBrand() {
-		return brand;
-	}
-
-	/**
-	 * @param brand the brand to set
-	 */
-	public void setBrand(Brand brand) {
-		this.brand = brand;
 	}
 
 	/**

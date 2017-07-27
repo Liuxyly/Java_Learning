@@ -3,11 +3,12 @@ package org.liuxy.rentcar.dao.impl;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.liuxy.rentcar.dao.NormalUserDao;
 import org.liuxy.rentcar.dao.UserDao;
 import org.liuxy.rentcar.entity.NormalUser;
 import org.liuxy.rentcar.entity.User;
 
-public class NormalUserDaoImpl extends BaseDao implements UserDao {
+public class NormalUserDaoImpl extends BaseDao implements NormalUserDao {
 
 	@Override
 	public User getUserByUser(User user) {
@@ -71,6 +72,23 @@ public class NormalUserDaoImpl extends BaseDao implements UserDao {
 		} else {
 			return 0;
 		}
+	}
+
+	@Override
+	public User getUser(String userName) {
+		String sql = "select userName from users where userName = ?";
+		ResultSet rs = this.dataQuery(sql, userName);
+		User user = null;
+		try {
+			while (rs.next()) {
+				user = new NormalUser();
+				
+				((NormalUser)user).setUserName(rs.getString("userName"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return user;
 	}
 
 }
