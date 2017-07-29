@@ -17,13 +17,87 @@
 <script type="text/javascript" src="js/main.js"></script>
 <script type="text/javascript">
 	$(function(){
-		$("#delOneRow").click(function() {
-			if (confirm("确认删除?")) {
-				delCatInfo(index, carId, selectObj);
-				
-				$(this).parent().parent().remove();
+		
+		initUpdateCarInfo();
+		
+		$("#pageDown").click(function() {
+			var nextPage = parseInt($("#pageNo").html()) + 1;
+			var totle = parseInt($("#pageTotle").html());
+			if ( nextPage <= totle) {
+				$.ajax({
+					url: 'CarInfoServlet',
+					data: {
+						opr: 'pageControl',
+						page: nextPage,
+						brandName: $(".BrandName").val()
+					},
+					dataType: 'json',
+					success: function (data) {
+						listCarInfo(data);
+						$("#pageNo").html(""+nextPage);
+					}
+				});
+			} else {
+				alert("没有下一页了");
 			}
 		});
+		
+		$("#pageUp").click(function() {
+			var nextPage = parseInt($("#pageNo").html()) - 1;
+			if ( nextPage >= 1) {
+				$.ajax({
+					url: 'CarInfoServlet',
+					data: {
+						opr: 'pageControl',
+						page: nextPage,
+						brandName: $(".BrandName").val()
+					},
+					dataType: 'json',
+					success: function (data) {
+						listCarInfo(data);
+						$("#pageNo").html(""+nextPage);
+					}
+				});
+				
+			} else {
+				alert("没有上一页了");
+			}
+		});
+		
+		$("#toPageB").click(function() {
+			var pageNo = parseInt($("#toPage").val());
+			var totle = parseInt($("#pageTotle").html());
+			if (pageNo <= 0 || pageNo > totle) {
+				alert("请输入的正确的页数");
+				return;
+			}
+			
+			$.ajax({
+				url: 'CarInfoServlet',
+				data: {
+					opr: 'pageControl',
+					page: pageNo,
+					brandName: $(".BrandName").val()
+				},
+				dataType: 'json',
+				success: function (data) {
+					listCarInfo(data);
+					$("#pageNo").html(""+pageNo);
+				}
+			});
+		});
+		
+		$(".updateCarInfo").attr("href", function (index, oldData) {
+			return oldData + "&page=" + $("#yj12").val();
+		})
+		
+		$(".BrandName").change(function () {
+			initUpdateCarInfo();
+		});
+		
+		// 参考：http://blog.csdn.net/qq_26222859/article/details/51375239
+		// 因为js运行与html渲染是两个线程所以会有找不到函数的问题
+		$(document).on('click', '.delOneRow', delOneRow);
 	});
 </script>
 <body>
@@ -39,14 +113,14 @@
         	<div class="Or1">
             	<span class="Or11">更新车辆</span>
             </div>
-            <form action="">
+            <div>
             	<span>&nbsp;&nbsp; &nbsp;品 牌：</span>
-            	<input type="text"/>
-            	<input type="submit" value="查 询"/>
-            </form>
+            	<input type="text" class="BrandName"/>
+            	<!-- <input type="submit" value="查 询" id="queryByBrandName"/> -->
+            </div>
             <a href="admin/addNewCar.jsp">添加新车</a>
             <table width="870" height="75" border="1" cellpadding="0" cellspacing="0" id="tab2">
-            	<tr>
+            	<tr class="top">
                 	<td><strong>#</strong></td>
                     <td><strong>品牌</strong></td>
                     <td><strong>型号</strong></td>
@@ -57,27 +131,9 @@
                     <td><strong>折扣</strong></td>
                     <td><strong>操作</strong></td>
                 </tr>
-                <c:set var="index" value="0" />
-                <c:forEach items="${carInfos }" var="carInfo">
-                <c:set var="index" value="${index+1}" />
-                	<tr id = "${index}">
-	                	<td><a href="">${index}</a></td>
-	                    <td>${carInfo.carType.brand.brandName }</td>
-	                    <td>${carInfo.carType.cartypeName }</td>
-	                    <td>${carInfo.carJiegou }</td>
-	                	<td>${carInfo.carPailiang }/${carInfo.carBox }</td>
-	                    <td>${carInfo.carPeople }</td>
-	                    <td>${carInfo.price }</td>
-	                    <td>${carInfo.discount }</td>
-	                    <td>
-	                    	<a href="CarInfoServlet?opr=alterCarInfoCon&carInfoId=${carInfo.carId}">更新</a>
-	                    	<input type="button" id = "delOneRow" value="删除"/>
-	                    </td>
-	                </tr>
-                </c:forEach>
             </table>
        		<div class="Yj1">
-            	当前第1页 <a href="" id="yj11">《上一页></a> <a href="" id="yj11">下一页》</a> 共计10页 到第<input type="text" id="yj12">页 <input type="submit" value="确 定">
+            	当前第<span id="pageNo">1</span>页 <input type="button" id="pageUp" value="《上一页" /><input type="button" id="pageDown" value="下一页》"/> 共计<span id="pageTotle"></span>页 到第<input value="1" type="text" id="toPage">页 <input id="toPageB" type="button" value="确 定">
             </div>      
     	</div>
     </div>

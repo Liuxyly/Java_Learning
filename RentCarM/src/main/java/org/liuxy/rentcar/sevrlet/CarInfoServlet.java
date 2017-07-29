@@ -6,10 +6,7 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
-import java.sql.Blob;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Consumer;
 
 import javax.servlet.ServletException;
@@ -17,7 +14,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
@@ -27,6 +23,7 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.liuxy.rentcar.entity.Brand;
 import org.liuxy.rentcar.entity.CarInfo;
 import org.liuxy.rentcar.entity.CarType;
+import org.liuxy.rentcar.entity.Page;
 import org.liuxy.rentcar.service.BrandService;
 import org.liuxy.rentcar.service.CarInfoService;
 import org.liuxy.rentcar.service.CarTypeService;
@@ -44,13 +41,15 @@ import com.alibaba.fastjson.JSONArray;
 public class CarInfoServlet extends HttpServlet {
 	private static final String ENCODE = "UTF-8";
 	private static final long serialVersionUID = 1L;
+	
+	private CarInfoService carInfoService = new CarInfoServiceImpl();
+	private CarTypeService carTypeService = new CarTypeServiceImpl();
        
     /**
      * @see HttpServlet#HttpServlet()
      */
     public CarInfoServlet() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
 	/**
@@ -69,11 +68,7 @@ public class CarInfoServlet extends HttpServlet {
 			uploadFile(request, response);
 		}
 		
-		// String oprA = (String)request.getAttribute("opr");
 		String oprP = request.getParameter("opr");
-//		if (opr != null && opr.equals("addBrandName")){
-//			addBrandName(request, response);
-//		}
 		
 		if (oprP != null) {
 			switch (oprP) {
@@ -83,6 +78,9 @@ public class CarInfoServlet extends HttpServlet {
 			case "alterCarInfoCon":
 				alterCarInfoCon(request, response);
 				break;
+			case "queryByBrandName":
+				queryByBrandName(request, response);
+				break;
 			case "delCarInfo":
 				delCarInfo(request, response);
 				break;
@@ -91,12 +89,54 @@ public class CarInfoServlet extends HttpServlet {
 				break;
 			case "addCarType":
 				addCarType(request, response);
+			case "pageControl":
+				pageControl(request, response);
+				break;
 			default:
 				break;
 			}
 		}
 	}
-	
+
+	protected void pageControl(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		String page = request.getParameter("page");
+		
+		String brandName = request.getParameter("brandName");
+		Brand brand = null;
+		if (!brandName.equals("")) {
+			brand = new Brand();
+			brand.setBrandName(brandName);
+		}
+		
+		Page<CarInfo> paging =  carInfoService.listCarInfoByBrand(brand, Integer.parseInt(page), 6);
+		
+		String carInfoString = JSONArray.toJSONString(paging);
+		
+		PrintWriter out = response.getWriter();
+		out.print(carInfoString);
+		
+		out.close();
+	}
+
+	protected void queryByBrandName(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		String brandName = request.getParameter("brandName");
+		Brand brand = null;
+		if (!brandName.equals("")) {
+			brand = new Brand();
+			brand.setBrandName(brandName);
+		}
+		
+		Page<CarInfo> paging =  carInfoService.listCarInfoByBrand(brand, 1, 6);
+		
+		String carInfoString = JSONArray.toJSONString(paging);
+		
+		PrintWriter out = response.getWriter();
+		out.print(carInfoString);
+		
+		out.close();
+		
+	}
+
 	protected void addCarType(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String carTypeNameVal =  request.getParameter("carTypeName");
 		Integer brandIDVal = Integer.parseInt(request.getParameter("brandId"));
@@ -106,8 +146,6 @@ public class CarInfoServlet extends HttpServlet {
 		carType.setCartypeName(carTypeNameVal);
 		brand.setBrandId(brandIDVal);
 		carType.setBrand(brand);
-		
-		CarTypeService carTypeService = new CarTypeServiceImpl();
 		
 		boolean flag = true;
 		
@@ -132,12 +170,10 @@ public class CarInfoServlet extends HttpServlet {
 	
 	protected void alterCarInfoCon(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Integer carId = Integer.parseInt(request.getParameter("carInfoId"));
-		CarInfoService carInfoService = new CarInfoServiceImpl();
 		
 		CarInfo carInfo = carInfoService.findCarInfoByCarId(carId);
 		
 		request.setAttribute("carInfo", carInfo);
-		CarTypeService carTypeService = new CarTypeServiceImpl();
 		request.setAttribute("carType", carTypeService.getCarTypeOptionsByBrandID(carInfo.getCarType().getBrand().getBrandId()));
 		request.getRequestDispatcher("admin/alterCar.jsp").forward(request, response);
 		
@@ -145,7 +181,6 @@ public class CarInfoServlet extends HttpServlet {
 	
 	protected void getCarTypeOptions(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String brandIdVal = (String)request.getParameter("brandId");
-		CarTypeService carTypeService = new CarTypeServiceImpl();
 		List<CarType> list = carTypeService.getCarTypeOptionsByBrandID(Integer.parseInt(brandIdVal));
 		PrintWriter out = response.getWriter();
 		
@@ -157,10 +192,24 @@ public class CarInfoServlet extends HttpServlet {
 	
 	protected void delCarInfo(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Integer carId = Integer.parseInt(request.getParameter("carInfoId"));
+		Integer page = Integer.parseInt(request.getParameter("page"));
+		String brandNameVal = (String)request.getParameter("brandName");
 		
-		CarInfoService carInfoService = new CarInfoServiceImpl();
+		Brand brandtmp = null;
+		if (brandNameVal != null && !brandNameVal.equals("")) {
+			brandtmp = new Brand();
+			brandtmp.setBrandName(brandNameVal);
+		}
 		
 		carInfoService.deleteCarInfoByCarId(carId);
+		PrintWriter out = response.getWriter();
+		
+		Page<CarInfo> paging = carInfoService.listCarInfoByBrand(brandtmp, page, 6);
+		
+		String carTypeOptions = JSONArray.toJSONString(paging);
+		out.print(carTypeOptions);
+		
+		out.close();
 	}
 	
 	protected void addBrandName(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -195,7 +244,7 @@ public class CarInfoServlet extends HttpServlet {
 		CarInfo carInfo = new CarInfo();
 		CarType carType = new CarType();
 		Brand brand = new Brand();
-		CarInfoService carInfoService = new CarInfoServiceImpl();
+//		CarInfoService carInfoService = new CarInfoServiceImpl();
 		
 		try {
 			List<FileItem> items = upload.parseRequest(request);
@@ -273,22 +322,12 @@ public class CarInfoServlet extends HttpServlet {
 			
 			items.forEach(opr);
 			
-			List<CarInfo> carInfos = ((List<CarInfo>)request.getSession().getAttribute("carInfos"));
-			
 			if (carInfo.getCarId() == null) {
 				carInfo.setCarState(1);
 				carInfoService.addCarInfoNot(carInfo);
-				carInfos.add(carInfo);
 			} else {
 				carInfo.setCarState(1);
 				carInfoService.updateCarInfoByCarId(carInfo);
-				
-				for (int i = 0; i < carInfos.size(); i++) {
-					if(carInfos.get(i).getCarId() == carInfo.getCarId()){
-						carInfos.set(i, carInfoService.findCarInfoByCarId(carInfo.getCarId()));
-					}
-				}
-				
 			}
 			
 			response.sendRedirect("admin/updateCar.jsp");

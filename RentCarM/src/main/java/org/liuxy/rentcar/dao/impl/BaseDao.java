@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.liuxy.rentcar.entity.Page;
 import org.liuxy.util.DBConfig;
 
 public class BaseDao {
@@ -52,6 +53,27 @@ public class BaseDao {
 		}
 		return this.resultSet;
 	}
+	
+//	public ResultSet dataQuery(String SQL, Page page, Object...parameters) {
+//		try {
+//			this.preparedStatement = this.getConnection().prepareStatement(SQL);
+//			this.preparedStatement.setMaxRows(page.getEndIndex());	//关键代码，设置最大记录数为当前页记录的截止下标
+//			for (int i = 0, j = 0; i < parameters.length; i++) {
+//				if (parameters[i] != null) {
+//					j = j + 1;
+//					this.preparedStatement.setObject(j, parameters[i]);
+//				}
+//			}
+//			this.resultSet = this.preparedStatement.executeQuery();
+//			
+//			if (page.getBeginIndex() > 0) {
+//				this.resultSet.absolute(page.getBeginIndex());//关键代码，直接移动游标为当前页起始记录处
+//			}
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		}
+//		return this.resultSet;
+//	}
 	
 	public int dataUpdate(String SQL, Object...parameters) {
 		int rowNumber = 0;

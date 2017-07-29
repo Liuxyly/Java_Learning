@@ -90,6 +90,8 @@
 	            		<!-- <input name="brandName" type="text" id="Er21"  placeholder="请输入品牌" /> -->
 	            		<input type="hidden" name="brandId" value=""/>
 	            		<input type="button" value="添加品牌" onclick="addBrand()">
+	            		</p>
+	            		<p>
 	            		<%-- 级别 --%>
 	                 	<label for="carJibie">* 级&nbsp;&nbsp;别：</label>
 	                 	<!-- <input name="carJibie" type="text" id="carJibie" placeholder="请输入级别" /> -->
@@ -110,11 +112,12 @@
 	            	</div>
 	                <p>
 	                	<label for="cartypeName">* 型&nbsp;&nbsp; 号：</label>
-	                	<select id="cartypeName" name="cartypeName" class="brandNameC">
+	                	<select id="cartypeName" name="cartypeName" class="brandNameC" onfocus="cartypeNameChange()">
 	            			<option value="-1">--请输入型号--</option>
 	            		</select>
 	            		<input type="button" value="添加型号" onclick="addCarType()" />
-	            		
+            		</p>
+            		<p>
 	                	<!-- <input name="cartypeName" type="text" id="cartypeName"  placeholder="请输入型号"/> -->
 	                	<label for="carJiegou">* 结&nbsp;&nbsp; 构：</label>
 	                	<input name="carJiegou" type="text" id="carJiegou"  placeholder="请输入结构" />
@@ -127,12 +130,16 @@
 	                <p>
 	                	<label for="carPailiang">* 排&nbsp;&nbsp; 量：</label>
 	                	<input name="carPailiang" type="text" id="carPailiang"  placeholder="请输入排量" />
+	                </p>
+	            	<p>
 	                	<label for="carBox">* 变速 箱：</label>
 	                	<input name="carBox" type="text" id="carBox"  placeholder="请输入变速箱类型" />
 	                </p>
 	                <p>
 	                	<label for="carPeople">* 乘坐/人：</label>
 	                	<input name="carPeople" type="text" id="carPeople"  placeholder="请输入乘坐人数" />
+	                </p>
+	            	<p>
 	                	<label for="price">* 原&nbsp;&nbsp; 价：</label>
 	                	<input name="price" type="text" id="price"  placeholder="请输入原价" />
 	                </p>
@@ -143,6 +150,8 @@
 	                <p>
 	                	<label for="uploadFile">* 图&nbsp;&nbsp; 片：</label>
 	                	<input id="uploadFile" type="file" name="uploadFile"/>
+	                </p>
+	            	<p>
 	                	<input type="submit" class="L213" value="提 交"/>
 	                </p>
 	            </div>

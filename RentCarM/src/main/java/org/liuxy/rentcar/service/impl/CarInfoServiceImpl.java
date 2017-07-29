@@ -11,6 +11,7 @@ import org.liuxy.rentcar.dao.impl.CarTypeDaoImpl;
 import org.liuxy.rentcar.entity.Brand;
 import org.liuxy.rentcar.entity.CarInfo;
 import org.liuxy.rentcar.entity.CarType;
+import org.liuxy.rentcar.entity.Page;
 import org.liuxy.rentcar.service.CarInfoService;
 
 public class CarInfoServiceImpl implements CarInfoService {
@@ -69,6 +70,16 @@ public class CarInfoServiceImpl implements CarInfoService {
 	@Override
 	public int updateCarInfoByCarId(CarInfo carInfo) {
 		return carInfoDao.updateCarInfo(carInfo);
+	}
+
+	@Override
+	public Page<CarInfo> listCarInfoByBrand(Brand brand, Integer page, Integer prePage) {
+		
+		int totalRow = carInfoDao.getCarInfoCount(brand);	//通过select count 取得总记录数
+		Page<CarInfo> pageObj = new Page<>(totalRow, page);
+		pageObj.setPageList(carInfoDao.findAllByBrand(brand, pageObj));
+		
+		return pageObj;
 	}
 
 }

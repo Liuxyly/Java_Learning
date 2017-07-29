@@ -13,6 +13,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.liuxy.rentcar.entity.AdminUser;
 import org.liuxy.rentcar.entity.NormalUser;
+import org.liuxy.rentcar.entity.Page;
 import org.liuxy.rentcar.service.AdminUserService;
 import org.liuxy.rentcar.service.BrandService;
 import org.liuxy.rentcar.service.CarInfoService;
@@ -151,7 +152,6 @@ public class UserAuthenticate extends HttpServlet {
 		} else {
 			httpSession.setAttribute("orderList", orderService.listOrders());
 			httpSession.setAttribute("brandNames", brandService.brandNameOptions());
-			httpSession.setAttribute("carInfos", carInfoService.listAllCarInfo());
 			httpSession.setAttribute("adminUser", userInfo);
 			response.sendRedirect("admin/index.jsp");
 		}

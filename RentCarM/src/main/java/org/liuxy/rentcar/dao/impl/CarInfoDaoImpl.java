@@ -1,5 +1,6 @@
 package org.liuxy.rentcar.dao.impl;
 
+import java.io.File;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -10,6 +11,7 @@ import org.liuxy.rentcar.dao.CarInfoDao;
 import org.liuxy.rentcar.entity.Brand;
 import org.liuxy.rentcar.entity.CarInfo;
 import org.liuxy.rentcar.entity.CarType;
+import org.liuxy.rentcar.entity.Page;
 import org.liuxy.rentcar.entity.User;
 
 public class CarInfoDaoImpl extends BaseDao implements CarInfoDao {
@@ -125,6 +127,87 @@ public class CarInfoDaoImpl extends BaseDao implements CarInfoDao {
 	public int deleteCarInfoByCarID(Integer carId) {
 		String sql = "DELETE FROM CarInfo WHERE carId = ?";
 		return this.dataUpdate(sql, carId);
+	}
+	
+	@Override
+	public int getCarInfoCount(Brand brand) {
+		
+		StringBuffer sqlB = new StringBuffer("select count(1) as count from CarInfo ");
+		int count = 0;
+		ResultSet rs = null;
+		
+		if (brand != null) {
+			sqlB.append("as c, Brand as b, CarType as i where i.cartypeId = c.cartypeId and b.brandId = i.brandId and brandName = ? ");
+			rs = this.dataQuery(sqlB.toString(), brand.getBrandName());
+		} else {
+			rs = this.dataQuery(sqlB.toString());
+		}
+		try {
+			while (rs.next()) {
+				count = rs.getInt("count");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return count;
+	}
+
+	@Override
+	public List<CarInfo> findAllByBrand(Brand brand, Page<CarInfo> page) {
+		
+		StringBuffer sqlB = new StringBuffer("SELECT carId, i.cartypeId as cartypeId, i.cartypeName as cartypeName, b.brandId as brandId, b.brandName as brandName, carJibie, carJiegou, carPailiang, carBox, carPeople, price, discount, carImg, carState "
+				+ " FROM CarInfo as c, Brand as b, CarType as i where i.cartypeId = c.cartypeId and b.brandId = i.brandId and 1=1 ");
+		
+		ResultSet rs = null;
+		
+		if (brand != null) {
+			sqlB.append("and b.brandName = ? ");
+			sqlB.append("limit ?, ? ");
+			rs = this.dataQuery(sqlB.toString(), brand.getBrandName(), page.getBeginIndex(), page.getEndIndex());
+		} else {
+			sqlB.append("limit ?, ? ");
+			rs = this.dataQuery(sqlB.toString(), page.getBeginIndex(), page.getEndIndex());
+		}
+		
+		List<CarInfo> list = new ArrayList<>();
+		
+		try {
+			CarInfo carInfo = null;
+			CarType carType = null;
+			Brand brandtmp = null;
+			
+			while (rs.next()) {
+				carInfo = new CarInfo();
+				carInfo.setCarId(rs.getInt("carId"));
+				
+				carType = new CarType();
+				carType.setCartypeName(rs.getString("cartypeName"));
+				carType.setCartypeId(rs.getInt("cartypeId"));
+				
+				brandtmp = new Brand();
+				brandtmp.setBrandName(rs.getString("brandName"));
+				brandtmp.setBrandId(rs.getInt("brandId"));
+				carType.setBrand(brandtmp);
+				
+				carInfo.setCarType(carType);
+				carInfo.setCarJibie(rs.getString("carJibie"));
+				carInfo.setCarJiegou(rs.getString("carJiegou"));
+				carInfo.setCarPailiang(rs.getString("carPailiang"));
+				carInfo.setCarBox(rs.getString("carBox"));
+				carInfo.setCarPeople(rs.getInt("carPeople"));
+				carInfo.setPrice(rs.getBigDecimal("price"));
+				carInfo.setDiscount(rs.getBigDecimal("discount"));
+				carInfo.setImageData(rs.getBinaryStream("carImg"));
+				carInfo.setCarState(rs.getInt("carState"));
+				
+				list.add(carInfo);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return list;
 	}
 
 }
