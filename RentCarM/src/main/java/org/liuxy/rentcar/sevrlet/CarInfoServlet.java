@@ -6,11 +6,19 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -44,7 +52,8 @@ public class CarInfoServlet extends HttpServlet {
 	
 	private CarInfoService carInfoService = new CarInfoServiceImpl();
 	private CarTypeService carTypeService = new CarTypeServiceImpl();
-       
+	private BrandService brandService = new BrandServiceImpl();
+      
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -75,6 +84,12 @@ public class CarInfoServlet extends HttpServlet {
 			case "addBrandName":
 				addBrandName(request, response);
 				break;
+			case "getBrands":
+				getBrands(request, response);
+				break;
+			case "choiceCar":
+				choiceCar(request, response);
+				break;
 			case "alterCarInfoCon":
 				alterCarInfoCon(request, response);
 				break;
@@ -92,10 +107,117 @@ public class CarInfoServlet extends HttpServlet {
 			case "pageControl":
 				pageControl(request, response);
 				break;
+			case "getImg":
+				getImgByCarId(request, response);
+				break;
 			default:
 				break;
 			}
 		}
+	}
+
+	protected void getImgByCarId(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		response.setContentType("image/gif");
+		
+		String carId = request.getParameter("carId");
+		InputStream inputStream = this.carInfoService.getImgByCarId(Integer.parseInt(carId));
+		int size = inputStream.available();
+		byte[] image = new byte[size];
+		
+		inputStream.read(image);
+		
+		ServletOutputStream outputStream = response.getOutputStream();
+		outputStream.write(image);
+	}
+
+	protected void choiceCar(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+		Map<String, String[]> map = request.getParameterMap();
+		List<String> levels = null;
+		List<String> brands = null;
+		List<String> prices = null;
+		String defaultSort = null;
+		String RrlPriceSort = null;
+		String stockOnlySort = null;
+		String pageNumber = null;
+		 
+		Pattern pattern = Pattern.compile("\\[([^\\]]*)\\]");
+		Matcher matcher = null;
+		
+		String tmpKey = null;
+		
+		Iterator<String> iter = map.keySet().iterator();
+		while (iter.hasNext()) {
+			String key = iter.next();
+	    	
+			matcher = pattern.matcher(key);
+			
+			if (matcher.find()){
+				tmpKey = matcher.group(1);
+			} else {
+				tmpKey = "";
+			}
+			
+			switch (tmpKey) {
+			case "level":
+				levels = Arrays.asList((String[]) map.get(key));
+				break;
+			case "brand":
+				brands = Arrays.asList((String[]) map.get(key));
+				break;
+			case "price":
+				prices = Arrays.asList((String[]) map.get(key));
+				break;
+			case "defaultSort":
+				for (Object obj : map.get(key)) {
+					defaultSort = (String)obj;
+				}
+				break;
+			case "RrlPriceSort":
+				for (Object obj : map.get(key)) {
+					RrlPriceSort = (String)obj;
+				}
+				break;
+			case "stockOnlySort":
+				for (Object obj : map.get(key)) {
+					stockOnlySort = (String)obj;
+				}
+				break;
+			case "pageNumber":
+				for (Object obj : map.get(key)) {
+					pageNumber = (String)obj;
+				}
+				break;
+			default:
+				break;
+			}
+	     } 
+		
+		Page<CarInfo> page = new Page<>(carInfoService.getCarInfoCountByCondition(levels, brands, prices, stockOnlySort), Integer.parseInt(pageNumber), 4);
+		
+		page.setPageList(carInfoService.findAllBycondition(levels, brands, prices, defaultSort, RrlPriceSort, stockOnlySort, page));
+		
+		String jsonString = JSONArray.toJSONString(page);
+		
+		System.out.println(jsonString);
+		
+		PrintWriter out = response.getWriter();
+		
+		out.print(jsonString);
+		
+		out.close();
+	}
+
+	protected void getBrands(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		List<Brand> brandOptions = brandService.brandNameOptions();
+		
+		PrintWriter out = response.getWriter();
+		
+		String jsonString = JSONArray.toJSONString(brandOptions);
+		
+		out.print(jsonString);
+		
+		out.close();
 	}
 
 	protected void pageControl(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

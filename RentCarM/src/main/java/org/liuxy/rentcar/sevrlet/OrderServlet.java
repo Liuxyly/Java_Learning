@@ -13,15 +13,15 @@ import org.liuxy.rentcar.service.impl.OrderServiceImpl;
 /**
  * Servlet implementation class OrderOprations
  */
-@WebServlet("/OrderOprations")
-public class OrderOprations extends HttpServlet {
+@WebServlet("/OrderServlet")
+public class OrderServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
 	private OrderService orderService = new OrderServiceImpl();
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public OrderOprations() {
+    public OrderServlet() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -45,6 +45,8 @@ public class OrderOprations extends HttpServlet {
 		if (opr.equals("display")) {
 			displayOrder(request, response);
 		}
+		
+		
 	}
 	
 	protected void confirmOrder(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

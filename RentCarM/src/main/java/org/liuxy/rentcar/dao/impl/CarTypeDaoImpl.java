@@ -45,6 +45,8 @@ public class CarTypeDaoImpl extends BaseDao implements CarTypeDao {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			this.closeAll();
 		}
 		
 		return carTypeTmp;
@@ -66,6 +68,8 @@ public class CarTypeDaoImpl extends BaseDao implements CarTypeDao {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			this.closeAll();
 		}
 		
 		return list;
@@ -90,6 +94,8 @@ public class CarTypeDaoImpl extends BaseDao implements CarTypeDao {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			this.closeAll();
 		}
 		
 		return carTypeTmp;

@@ -94,7 +94,7 @@
 </script>
 <body>
 	<div class="Log1" align="right">
-    	<a href="index">回到首页</a> | 
+    	<a href="index.jsp">回到首页</a> | 
     	<a href="">帮助中心</a> | 0411-88888888
     </div>
     <div class="TiTle" align="center">
@@ -108,7 +108,7 @@
         		<span>欢迎注册</span>
             	<div class="er12">
             		<span>如果您已经是会员，请点击</span>
-                	<a href="login">登录</a>
+                	<a href="login.jsp">登录</a>
                 </div>
             </div>
         	<form action="UserAuthenticate" method="post" id="registerForm">

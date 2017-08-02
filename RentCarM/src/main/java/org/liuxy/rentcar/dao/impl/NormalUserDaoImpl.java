@@ -12,18 +12,22 @@ public class NormalUserDaoImpl extends BaseDao implements NormalUserDao {
 
 	@Override
 	public User getUserByUser(User user) {
+		
 		NormalUser normalUser = null;
 		
 		if (user instanceof NormalUser) {
 			normalUser = (NormalUser)user;
 		
-			String sql = "select userid, userName, userPhone from users where userName = ? and userPwd = ?";
+			String sql = "select userid, userName, userPhone, userPwd from users where userName = ? and userPwd = ?";
 			ResultSet rs = this.dataQuery(sql, normalUser.getUserName(), normalUser.getUserPass());
 			
 			try {
 				// 必须要用next()类似迭代器
 				while (rs.next()){
-					normalUser = new NormalUser(rs.getInt("userid"), rs.getString("userName"), rs.getString("userPhone"));
+					if (rs.getString("userName").equals(((NormalUser) user).getUserName())
+							&& rs.getString("userPwd").equals(((NormalUser) user).getUserPass())) {
+						normalUser = new NormalUser(rs.getInt("userid"), rs.getString("userName"), rs.getString("userPhone"));
+					}
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -87,6 +91,8 @@ public class NormalUserDaoImpl extends BaseDao implements NormalUserDao {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			closeAll();
 		}
 		return user;
 	}

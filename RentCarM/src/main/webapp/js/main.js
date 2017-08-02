@@ -208,3 +208,178 @@ function delOneRow() {
 		delCatInfo($(this));
 	}
 }
+
+function options(opr, obj) {
+	$("input[name=" + opr + "]:" + obj).click(function() {
+		if ($(this).val() == 0) {
+			if ($(this).is(":checked")) {
+				$(this).parent("li").nextAll().hide();
+				$(this).parent("li").nextAll().find("input").removeAttr("checked");
+				$("input[name=dailyRateFrom]").val("");
+				$("input[name=dailyRateTo]").val("");
+			} else {
+				$(this).parent("li").nextAll().show();
+			}
+		}
+	});
+}
+
+function validatePrice(obj) {
+	$("input[name= " + obj + "]").blur(function () {
+		var patern = /^\d+(\.\d{1,2})?$/g;
+		
+		if ($(this).val() == '') {
+			$("input[name=dailyRate]").prop("disabled",false);
+			return;
+		}
+		
+		$("input[name=dailyRate]").prop("disabled",true);
+		
+		if (!patern.test($(this).val())) {
+			$("#validatePrice").css({
+				color: "red",
+				display: "inline"
+			});
+		} else {
+			$("#validatePrice").css({
+				display: "none"
+			});
+			var dailyRateFrom = parseInt($("input[name=dailyRateFrom]").val());
+			var dailyRateTo = parseInt($("input[name=dailyRateTo]").val());
+			
+			if (dailyRateFrom != 0 && dailyRateTo != 0) {
+				if (dailyRateTo - dailyRateFrom < 0) {
+					$("#validatePrice").css({
+						color: "red",
+						display: "inline"
+					});
+				} else {
+					$("#validatePrice").css({
+						display: "none"
+					});
+				}
+			}
+		}
+	});
+}
+
+function initIndexPage() {
+	choiceCar(1);
+}
+
+function choiceCar(pageNumber) {
+	var pageData = {};
+	
+	pageData.level = [];
+	
+	$("input[name=level]:checked").each(function() {
+		if ($(this).val() != 0) {
+			pageData.level.push($(this).val());
+		}
+	});
+	
+	pageData.brand = [];
+	
+	$("input[name=brand]:checked").each(function() {
+		if ($(this).val() != 0) {
+			pageData.brand.push($(this).val());
+		}
+	});
+	
+	pageData.price = [];
+	
+	var dailyRateFrom = parseInt($("input[name=dailyRateFrom]").val());
+	var dailyRateTo = parseInt($("input[name=dailyRateTo]").val());
+	
+	if ((dailyRateFrom != 0 || dailyRateTo != 0) && !isNaN(dailyRateFrom) && !isNaN(dailyRateTo)) {
+		pageData.price = [dailyRateFrom, dailyRateTo];
+	}
+	
+	switch ($("input[name=dailyRate]:checked").val()) {
+		case '0':
+			pageData.price = [];
+			break;
+		case '1':
+			pageData.price = [0, 150];
+			break;
+		case '2':
+			pageData.price = [150, 300];
+			break;
+		case '3':
+			pageData.price = [300, 500];
+			break;
+		case '4':
+			pageData.price = [500, 0];
+			break;
+		default:
+			break;
+	}
+	
+	if ($("input[name=defaultSort]").is(":checked")) {
+		pageData.defaultSort = true;
+	} else {
+		pageData.defaultSort = false;
+	}
+	
+	if ($("input[name=toHighSort]").is(":checked")) {
+		pageData.RrlPriceSort = true;
+	} else {
+		pageData.RrlPriceSort = false;
+	}
+	
+	if ($("input[name=stockOnlySort]").is(":checked")) {
+		pageData.stockOnlySort = true;
+	} else {
+		pageData.stockOnlySort = false;
+	}
+	
+	pageData.pageNumber = pageNumber;
+	
+	$.ajax({
+		url: "CarInfoServlet",
+		data: {
+			opr: "choiceCar",
+			pageData: pageData
+		},
+		type: 'GET',
+		dataType: 'json',
+		success: function(data) {
+			listCarInfoDetail(data);
+			$("#pageNumber").html(data.count);
+			$("#totalPage").html(data.total);
+		}
+	});
+}
+
+function listCarInfoDetail(data) {
+	$(".car").remove();
+	
+	var i = 0;
+	$.each(data.pageList, function(index, carInfo) {
+		i = i + 1;
+		
+		var htmlStr = "<div class = 'car' ><div>";
+		htmlStr += "<img src='CarInfoServlet?opr=getImg&carId="+ carInfo.carId +"' height = '80' width='200'/>";
+		htmlStr += "</div><div><ul><li>";
+		
+		// htmlStr += "<li><img src='images/homepage/'/>";
+		htmlStr += "<span>" + carInfo.carType.brand.brandName + "</span></li>";
+		htmlStr += "<li><img src='images/homepage/carInformation.png'/>";
+		htmlStr += "<span>" + carInfo.carJiegou + "/1.6自动</span></li>";
+		htmlStr += "<li><img src='images/homepage/memberLimit.png'/>";
+		htmlStr += "<span>乘坐" + carInfo.carPeople + "人</span></li></ul></div>";
+		
+		var price = parseFloat(carInfo.price).toFixed(2);
+		var discount = parseFloat(carInfo.discount).toFixed(2) * 0.01;
+		htmlStr += "<div><p>￥<span>"+ (price * discount).toFixed(2) +"</span>/日均</p>";
+		htmlStr += "<p>原价：￥" + price + "</p> </div>";
+		htmlStr += "<div class='submit'><input id = 'carId' type = 'hidden' value = '"+ carInfo.carId +"'/><input class = 'rentCar' type='button' value='租车' ";
+		if (carInfo.carState == '0') {
+			htmlStr += "disabled = 'disabled'";
+		}
+		htmlStr +=" /></div>";
+		
+		$("#insideSection").append(htmlStr);
+		
+	});
+}

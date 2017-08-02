@@ -1,10 +1,13 @@
 package org.liuxy.rentcar.dao.impl;
 
 import java.io.File;
+import java.io.InputStream;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.liuxy.rentcar.dao.CarInfoDao;
@@ -83,6 +86,8 @@ public class CarInfoDaoImpl extends BaseDao implements CarInfoDao {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			this.closeAll();
 		}
 		
 		return list;
@@ -148,6 +153,8 @@ public class CarInfoDaoImpl extends BaseDao implements CarInfoDao {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			this.closeAll();
 		}
 		
 		return count;
@@ -156,7 +163,7 @@ public class CarInfoDaoImpl extends BaseDao implements CarInfoDao {
 	@Override
 	public List<CarInfo> findAllByBrand(Brand brand, Page<CarInfo> page) {
 		
-		StringBuffer sqlB = new StringBuffer("SELECT carId, i.cartypeId as cartypeId, i.cartypeName as cartypeName, b.brandId as brandId, b.brandName as brandName, carJibie, carJiegou, carPailiang, carBox, carPeople, price, discount, carImg, carState "
+		StringBuffer sqlB = new StringBuffer("SELECT carId, i.cartypeId as cartypeId, i.cartypeName as cartypeName, b.brandId as brandId, b.brandName as brandName, carJibie, carJiegou, carPailiang, carBox, carPeople, price, discount, carState "
 				+ " FROM CarInfo as c, Brand as b, CarType as i where i.cartypeId = c.cartypeId and b.brandId = i.brandId and 1=1 ");
 		
 		ResultSet rs = null;
@@ -198,16 +205,174 @@ public class CarInfoDaoImpl extends BaseDao implements CarInfoDao {
 				carInfo.setCarPeople(rs.getInt("carPeople"));
 				carInfo.setPrice(rs.getBigDecimal("price"));
 				carInfo.setDiscount(rs.getBigDecimal("discount"));
-				carInfo.setImageData(rs.getBinaryStream("carImg"));
+				// carInfo.setImageData(rs.getBinaryStream("carImg"));
 				carInfo.setCarState(rs.getInt("carState"));
 				
 				list.add(carInfo);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			this.closeAll();
 		}
 		
 		return list;
 	}
+
+	@Override
+	public List<CarInfo> findAllBycondition(List<String> levels, List<String> brands, List<String> prices,
+			String defaultSort, String RrlPriceSort, String stockOnlySort, Page<CarInfo> page) {
+		
+		StringBuffer sqlB = new StringBuffer("SELECT carId, i.cartypeId as cartypeId, i.cartypeName as cartypeName, b.brandId as brandId, b.brandName as brandName, carJibie, carJiegou, carPailiang, carBox, carPeople, price, discount, (price * discount * 0.01) as realprice, carState "
+				+ " FROM CarInfo as c, Brand as b, CarType as i where i.cartypeId = c.cartypeId and b.brandId = i.brandId and 1=1 ");
+		
+		HashMap<String, List<String>> condetionMap = new HashMap<>();
+		HashMap<String, List<String>> sectionMap = new HashMap<>();
+		ResultSet rs = null;
+		
+		List<String> stockOnlys = null;
+		
+		if (Boolean.parseBoolean(stockOnlySort)) {
+			stockOnlys = new ArrayList<>();
+			stockOnlys.add("1");
+		}
+		
+		if (stockOnlys != null && !stockOnlys.isEmpty()) {
+			condetionMap.put("carState", stockOnlys);
+		}
+		
+		if (levels != null && !levels.isEmpty()) {
+			condetionMap.put("carJibie", (List<String>)levels);
+		}
+		
+		if (brands != null && !brands.isEmpty()) {
+			condetionMap.put("b.brandId", (List<String>)brands);
+		}
+		
+		if (prices != null && !prices.isEmpty()) {
+			sectionMap.put("price", (List<String>)prices);
+		}
+		
+		rs = this.dataQueryByCondition(sqlB.toString(), condetionMap, sectionMap, page, Boolean.parseBoolean(defaultSort), Boolean.parseBoolean(RrlPriceSort));
+		
+		List<CarInfo> list = new ArrayList<>();
+		
+		try {
+			CarInfo carInfo = null;
+			CarType carType = null;
+			Brand brandtmp = null;
+			
+			while (rs.next()) {
+				carInfo = new CarInfo();
+				carInfo.setCarId(rs.getInt("carId"));
+				
+				carType = new CarType();
+				carType.setCartypeName(rs.getString("cartypeName"));
+				carType.setCartypeId(rs.getInt("cartypeId"));
+				
+				brandtmp = new Brand();
+				brandtmp.setBrandName(rs.getString("brandName"));
+				brandtmp.setBrandId(rs.getInt("brandId"));
+				carType.setBrand(brandtmp);
+				
+				carInfo.setCarType(carType);
+				carInfo.setCarJibie(rs.getString("carJibie"));
+				carInfo.setCarJiegou(rs.getString("carJiegou"));
+				carInfo.setCarPailiang(rs.getString("carPailiang"));
+				carInfo.setCarBox(rs.getString("carBox"));
+				carInfo.setCarPeople(rs.getInt("carPeople"));
+				carInfo.setPrice(rs.getBigDecimal("price"));
+				carInfo.setDiscount(rs.getBigDecimal("discount"));
+				// carInfo.setImageData(rs.getBinaryStream("carImg"));
+				carInfo.setCarState(rs.getInt("carState"));
+				
+				list.add(carInfo);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			this.closeAll();
+		}
+		
+		return list;
+	}
+
+	@Override
+	public int getCarInfoCountByCondition(List<String> levels, List<String> brands, List<String> prices,
+			String stockOnlySort) {
+		StringBuffer sqlB = new StringBuffer("SELECT count(1) as countNumber "
+				+ " FROM CarInfo as c, Brand as b, CarType as i where i.cartypeId = c.cartypeId and b.brandId = i.brandId and 1=1 ");
+		
+		HashMap<String, List<String>> condetionMap = new HashMap<>();
+		
+		HashMap<String, List<String>> sectionMap = new HashMap<>();
+		ResultSet rs = null;
+		
+		List<String> stockOnlys = null;
+		
+		if (Boolean.parseBoolean(stockOnlySort)) {
+			stockOnlys = new ArrayList<>();
+			stockOnlys.add("1");
+		}
+		
+		if (stockOnlys != null && !stockOnlys.isEmpty()) {
+			condetionMap.put("carState", stockOnlys);
+		}
+		
+		if (levels != null && !levels.isEmpty()) {
+			condetionMap.put("carJibie", (List<String>)levels);
+		}
+		
+		if (brands != null && !brands.isEmpty()) {
+			condetionMap.put("b.brandId", (List<String>)brands);
+		}
+		
+		if (prices != null && !prices.isEmpty()) {
+			sectionMap.put("price", (List<String>)prices);
+		}
+		
+		rs = this.dataQueryByCondition(sqlB.toString(), condetionMap, sectionMap, null, false, false);
+		
+		int count = 0;
+		
+		try {
+			while (rs.next()) {
+				count = rs.getInt("countNumber");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			this.closeAll();
+		}
+		
+		return count;
+	}
+
+	@Override
+	public InputStream getImgByCarId(Integer carId) {
+		
+		String sql = " select carImg from CarInfo where carId = ? ";
+		
+		ResultSet rs = this.dataQuery(sql, carId);
+		
+		InputStream inputStream = null;
+		
+		try {
+			if (rs.next()) {
+				inputStream = rs.getBinaryStream("carImg");
+				return inputStream;
+			} else {
+				return null;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		} finally {
+			this.closeAll();
+		}
+	}
+	
+	
 
 }

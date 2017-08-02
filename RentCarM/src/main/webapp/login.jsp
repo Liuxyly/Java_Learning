@@ -10,6 +10,24 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>登录</title>
 <link type="text/css" rel="stylesheet" href="css/carCSS.css"/>
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/main.js"></script>
+<script src="js/jquery.validate.min.js"></script>
+<script src="js/messages_zh.min.js"></script>
+<script type="text/javascript">
+	$(function() {
+		$("#userLogin").validate({
+			rules: {
+				userName: "required",
+				userPass: "required"
+			},
+			message: {
+				userName: "请输入账号",
+				userPass: "请输入密码"
+			}
+		});
+	});
+</script>
 </head>
 <body>
 	<div class="Log1" align="right">
@@ -26,7 +44,7 @@
     	<strong>神牛租车</strong>
     </div>
 		<div class="log2">
-			<form action="UserAuthenticate" method="post">
+			<form id="userLogin" action="UserAuthenticate" method="post">
 				<input type="hidden" name="opr" value="login"/>
 		    	<div class="log21">
 		        	<span class="L211">

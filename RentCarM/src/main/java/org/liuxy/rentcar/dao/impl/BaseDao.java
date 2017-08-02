@@ -5,13 +5,30 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.List;
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
 
 import org.liuxy.rentcar.entity.Page;
 import org.liuxy.util.DBConfig;
+import org.liuxy.util.DBManager;
 
 public class BaseDao {
 	private Connection connection;
 	private PreparedStatement preparedStatement;
+	/**
+	 * @return the preparedStatement
+	 */
+	
+	public PreparedStatement getPreparedStatement() {
+		return preparedStatement;
+	}
+	
+	
 	private ResultSet resultSet;
 	
 //	private String URL = "jdbc:mysql://localhost:3306/myschool?useUnicode=true&characterEncoding=utf-8&useSSL=false";
@@ -25,16 +42,15 @@ public class BaseDao {
 	private String driver = DBConfig.getInstance().getProperty("driver");
 	
 	public Connection getConnection(){
-		try {
-			Class.forName(driver);
-			this.connection = DriverManager.getConnection(URL, user, passwd);
-			
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
 		
+		Context context = null;
+		
+		// Class.forName(driver);
+		// this.connection = DriverManager.getConnection(URL, user, passwd);
+		// context = new InitialContext();
+		// DataSource dataSource = (DataSource) context.lookup("java:comp/env/jdbc/rentCar");
+		// connection = dataSource.getConnection();
+		connection = DBManager.getConn();
 		return this.connection;
 	}
 	
@@ -51,6 +67,98 @@ public class BaseDao {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		return this.resultSet;
+	}
+	
+	public ResultSet dataQueryByCondition(String SQL, HashMap<String, List<String>> condition, HashMap<String, List<String>> section, Page<?> page, boolean defaultSort, boolean RrlPriceSort) {
+		try {
+			
+			
+			StringBuffer sqlB = new StringBuffer(SQL);
+			
+			List<String> parameters = null;
+			
+			for (String conditionString : condition.keySet()) {
+				parameters = condition.get(conditionString);
+				
+				sqlB.append(" and ( 1 = 0 ");
+				for (int i = 0; i < parameters.size(); i++) {
+					sqlB.append(" or " + conditionString + " = ? ");
+				}
+				sqlB.append(" ) ");
+			}
+			
+			for (String sectionString : section.keySet()) {
+				parameters = section.get(sectionString);
+				if (Integer.parseInt(parameters.get(0)) != 0) {
+					sqlB.append(" and " + sectionString + " >= ? ");
+				}
+				if (Integer.parseInt(parameters.get(1)) != 0) {
+					sqlB.append(" and " + sectionString + " <= ? ");
+				}
+			}
+			
+			if (RrlPriceSort && defaultSort) {
+				sqlB.append(" order by carId, realprice ");
+			} else {
+				if (defaultSort) {
+					sqlB.append(" order by carId ");
+				}
+				
+				if (RrlPriceSort) {
+					sqlB.append(" order by realprice ");
+				}
+			}
+			
+			if (page != null && page.getCount() > 0) {
+				sqlB.append(" limit ?, ? ");
+			}
+			
+			System.out.println(sqlB.toString());
+			
+			this.preparedStatement = this.getConnection().prepareStatement(sqlB.toString());
+			
+			int j = 1;
+			
+			for (String conditionString : condition.keySet()) {
+				parameters = condition.get(conditionString);
+				for (int i = 0; i < parameters.size(); i++) {
+					this.preparedStatement.setObject(j, parameters.get(i));
+					j++;
+				}
+			}
+			
+			for (String sectionString : section.keySet()) {
+				parameters = section.get(sectionString);
+				if (Integer.parseInt(parameters.get(0)) != 0) {
+					this.preparedStatement.setObject(j, Double.parseDouble(parameters.get(0)));
+					j++;
+				}
+				if (Integer.parseInt(parameters.get(1)) != 0) {
+					this.preparedStatement.setObject(j, Double.parseDouble(parameters.get(1)));
+					j++;
+				}
+			}
+			
+			if (page != null && page.getCount() > 0) {
+				this.preparedStatement.setObject(j, page.getBeginIndex());
+				this.preparedStatement.setObject(j + 1, page.getEndIndex());
+			}
+			
+			this.resultSet = this.preparedStatement.executeQuery();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return this.resultSet;
+	}
+	
+	public ResultSet runExecuteQuery(){
+		try {
+			this.resultSet = this.preparedStatement.executeQuery();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
 		return this.resultSet;
 	}
 	
@@ -93,8 +201,10 @@ public class BaseDao {
 			rowNumber = this.preparedStatement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			this.closeAll();
 		}
-		this.closeAll();
+		
 		return rowNumber;
 	}
 	/**

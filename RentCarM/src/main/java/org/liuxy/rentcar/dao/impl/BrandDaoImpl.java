@@ -32,6 +32,8 @@ public class BrandDaoImpl extends BaseDao implements BrandDao {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			this.closeAll();
 		}
 		return list;
 	}
@@ -63,6 +65,8 @@ public class BrandDaoImpl extends BaseDao implements BrandDao {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			this.closeAll();
 		}
 		
 		return brandtmp;

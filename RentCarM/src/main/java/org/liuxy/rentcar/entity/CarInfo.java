@@ -16,6 +16,7 @@ public class CarInfo {
 	private BigDecimal price;
 	private BigDecimal discount;
 	private InputStream imageData;
+	private String imgagePath;
 	private Integer carState;
 	
 	public CarInfo() {
@@ -183,7 +184,19 @@ public class CarInfo {
 	public void setCarState(Integer carState) {
 		this.carState = carState;
 	}
-	
-	
+
+	/**
+	 * @return the imgagePath
+	 */
+	public String getImgagePath() {
+		return imgagePath;
+	}
+
+	/**
+	 * @param imgagePath the imgagePath to set
+	 */
+	public void setImgagePath(String imgagePath) {
+		this.imgagePath = imgagePath;
+	}
 	
 }

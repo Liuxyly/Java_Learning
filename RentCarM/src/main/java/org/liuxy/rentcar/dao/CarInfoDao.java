@@ -1,5 +1,6 @@
 package org.liuxy.rentcar.dao;
 
+import java.io.InputStream;
 import java.util.List;
 
 import org.liuxy.rentcar.entity.Brand;
@@ -13,6 +14,8 @@ public interface CarInfoDao {
 	
 	List<CarInfo> findAll();
 	
+	List<CarInfo> findAllBycondition(List<String> levels, List<String> brands, List<String> prices, String defaultSort, String RrlPriceSort, String stockOnlySort, Page<CarInfo> page);
+	
 	List<CarInfo> findAllByUser(User user);
 	
 	List<CarInfo> findAllByBrand(Brand brand, Page<CarInfo> page);
@@ -24,4 +27,8 @@ public interface CarInfoDao {
 	int deleteCarInfoByCarID(Integer carId);
 	
 	int getCarInfoCount(Brand brand);
+	
+	int getCarInfoCountByCondition(List<String> levels, List<String> brands, List<String> prices, String stockOnlySort);
+	
+	InputStream getImgByCarId(Integer carId);
 }

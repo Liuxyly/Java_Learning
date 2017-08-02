@@ -1,5 +1,6 @@
 package org.liuxy.rentcar.service.impl;
 
+import java.io.InputStream;
 import java.util.List;
 
 import org.liuxy.rentcar.dao.BrandDao;
@@ -80,6 +81,23 @@ public class CarInfoServiceImpl implements CarInfoService {
 		pageObj.setPageList(carInfoDao.findAllByBrand(brand, pageObj));
 		
 		return pageObj;
+	}
+
+	@Override
+	public List<CarInfo> findAllBycondition(List<String> levels, List<String> brands, List<String> prices,
+			String defaultSort, String RrlPriceSort, String stockOnlySort, Page<CarInfo> page) {
+		return carInfoDao.findAllBycondition(levels, brands, prices, defaultSort, RrlPriceSort, stockOnlySort, page);
+	}
+
+	@Override
+	public int getCarInfoCountByCondition(List<String> levels, List<String> brands, List<String> prices,
+			String stockOnlySort) {
+		return carInfoDao.getCarInfoCountByCondition(levels, brands, prices, stockOnlySort);
+	}
+
+	@Override
+	public InputStream getImgByCarId(Integer carId) {
+		return carInfoDao.getImgByCarId(carId);
 	}
 
 }

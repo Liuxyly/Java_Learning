@@ -59,19 +59,7 @@ public class UserAuthenticate extends HttpServlet {
 		// request.setCharacterEncoding("UTF-8"); Filter 过滤所有URL 并执行了该代码
 		
 		String opr = (String)request.getParameter("opr");
-		
-//		if (opr.equals("add")) {
-//			add(request, response);
-//		}
-//		if (opr.equals("login")) {
-//			login(request, response);
-//		}
-//		if (opr.equals("adminLogin")) {
-//			adminLogin(request, response);
-//		} 
-//		if (opr.equals("addAdmin")) {
-//		addAdmin(request, response);
-//	}
+
 		switch (opr) {
 		case "add":
 			add(request, response);
@@ -109,26 +97,6 @@ public class UserAuthenticate extends HttpServlet {
 		out.close();
 	}
 	
-	@SuppressWarnings("unused")
-	private void addAdmin(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String newAdminPwd = request.getParameter("newuserpwd");
-		String value = new Sha256Hash(newAdminPwd, SALT).toString();
-		
-		String newAdminName = request.getParameter("newusername");
-		
-		AdminUser newUser = new AdminUser(newAdminName, value);
-		System.out.println(newAdminPwd + "////" + value);
-		
-		int rcNumber = adminUserService.register(newUser);
-		HttpSession httpSession = request.getSession();
-		httpSession.removeAttribute("message");
-		if (rcNumber > 0) {
-			httpSession.setAttribute("message", "Successful");
-		} else {
-			httpSession.setAttribute("message", "Error");
-		}
-	}
-	
 	private void adminLogin(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String adminName = request.getParameter("adminName");
 		String adminPwd = request.getParameter("adminPwd");
@@ -144,10 +112,10 @@ public class UserAuthenticate extends HttpServlet {
 		
 		OrderService orderService = new OrderServiceImpl();
 		BrandService brandService = new BrandServiceImpl();
-		CarInfoService carInfoService = new CarInfoServiceImpl();
-		
+		httpSession.removeAttribute("message");
 		if (userInfo == null) {
 			httpSession.setAttribute("message", "Error");
+			
 			response.sendRedirect("admin/login.jsp");
 		} else {
 			httpSession.setAttribute("orderList", orderService.listOrders());

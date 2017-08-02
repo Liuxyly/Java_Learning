@@ -66,8 +66,8 @@
 </head>
 <body>
 	<div class="Log1" align="right">
-    	<a href="首页.html">回到首页</a> | 
-        <a href="管理员首页.html">回到管理员首页</a>
+    	<a href="index.jsp">回到首页</a> | 
+        <a href="admin/index.jsp">回到管理员首页</a>
     </div>
     <div class="TiTle" align="center">
     	Easy-Car<strong>神牛租车管理系统</strong>

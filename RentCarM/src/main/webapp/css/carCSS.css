@@ -863,3 +863,14 @@ section{
 #pageFoot a{
 	text-decoration:none;
 	}
+	
+#validatePrice {
+	display: none;
+}
+
+input.rentCar {
+	height: 100px;
+	width: 160px;
+	background: #06F;
+	font-size: 32px;
+}
