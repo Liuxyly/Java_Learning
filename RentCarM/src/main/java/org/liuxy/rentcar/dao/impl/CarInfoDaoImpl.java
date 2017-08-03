@@ -372,6 +372,12 @@ public class CarInfoDaoImpl extends BaseDao implements CarInfoDao {
 			this.closeAll();
 		}
 	}
+
+	@Override
+	public int updateCarState(Integer carId, Integer carState) {
+		String sql = "UPDATE CarInfo SET carState = ? WHERE carId = ?";
+		return this.dataUpdate(sql, carState, carId);
+	}
 	
 	
 

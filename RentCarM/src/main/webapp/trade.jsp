@@ -1,8 +1,10 @@
 <%@ page language="java" pageEncoding="UTF-8"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%
 	String path = request.getContextPath();
 	String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path + "/";
 %>
+<%@ include file="validateUser.jsp" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -17,30 +19,40 @@
 <script type="text/javascript">
 	$(function () {
 		$(".date").dateDropper({format: 'y年m月d日', color: '#66c8bba', animation: 'bounce', maxYear: 2030});
-		updateDays(0);
+		
+		$(".tx1").change(toDate);
+		
+		$(".tx2").change(toDate);
 	});
 	
-	var toDate = function () {
-		var getDateString = document.getElementsByClassName("tx1")[0].value.replace(/[年月日]/g, "-").substr(0, 10);
-		var reDateString = document.getElementsByClassName("tx2")[0].value.replace(/[年月日]/g, "-").substr(0, 10);
+	function toDate() {
+		var getDateString = $(".tx1").val().replace(/[年月日]/g, "-").substr(0, 10);
+		var reDateString = $(".tx2").val().replace(/[年月日]/g, "-").substr(0, 10);
 		if (getDateString == "" || reDateString == "") {
 			return;
 		}
 		
-		var _getDate = new Date(getDateString);
-		var _reDate = new Date(reDateString);
+		var _getDate = new Date(getDateString).valueOf();
+		var _reDate = new Date(reDateString).valueOf();
 		
 		if (_getDate > _reDate) {
 			alert("取车时间和还车时间不正确");
-		} else if (_getDate = _reDate) {
-			
+		} else if (_getDate == _reDate) {
+			days = 1;
+		} else {
+			var days = (_reDate - _getDate) / 86400000 + 1;
 		}
-		updateDays((_reDate.getTime() - _getDate.getTime()) / 86400000);
-	}
+		
+		$("#days").html(days);
+		
+		var unitPrice = parseFloat($(".unitPrice").html());
+		
+		$(".unitPriceReal").val(days * unitPrice);
+		
+		$(".Money").html(days * unitPrice);
+	} 
 	
-	var updateDays = function (days) {
-		document.getElementById( "days" ).innerHTML = days;
-	}
+	
 	
 </script>
 <body>
@@ -67,33 +79,45 @@
                 <image id="img11" src="images/bieke2.png"/>
                 <table border="1px" height="40" width="440" cellpadding="0" cellspacing="0" id="tab1">
                 	<tr align="center">
-                    	<td>别克凯越</td>
-                        <td>三厢/1.6自动</td>
-                        <td>乘坐5人</td>
+                    	<td>${requestScope.orderCarInfo.carType.brand.brandName }&nbsp;${requestScope.orderCarInfo.carType.cartypeName }</td>
+                        <td>${requestScope.orderCarInfo.carJiegou }/${requestScope.orderCarInfo.carPailiang }${requestScope.orderCarInfo.carBox }</td>
+                        <td>乘坐${requestScope.orderCarInfo.carPeople }人</td>
                     </tr>
                 </table>
             </div>
-            <form action="#" method="post">
+            <form action="OrderServlet?opr=tradeOrder" method="post">
+            	<input name="carId" type="hidden" value="${requestScope.orderCarInfo.carId }"/>
+            	<input name="userId" type="hidden" value="${sessionScope.normalUser.userId }"/>
 	            <div class="tr2">
 	            	<p>
 	            		<span>取车时间：</span>
-	            		<input name="getDate" type="text" class=" date tx1" onchange="toDate()">
+	            		<input name="getDate" type="text" class=" date tx1">
 	            	</p>
 	                <p>
 	                	<span>还车时间：</span>
-	                	<input name="retDate" type="text" class="date tx2" onchange="toDate()">
+	                	<input name="reDate" type="text" class="date tx2">
 	                </p>
 	                <p>
 	                	<span>取车地点：</span>
-	                	<input type="text" value="大连"/>
+	                	<input name="getAddress" type="text" value="大连"/>
 	                </p>
 	                <p>
 	                	<span>还车地点：</span>
-	                	<input type="text" value="大连"/>
+	                	<input name="reAddress" type="text" value="大连"/>
 	                </p>
 	                <p>
-	                	<span>租 赁 费：<span name="unitPrice">220</span> × <span id="days">2</span> = &yen; </span>
-	                	<span class="Money">440</span>
+	                	<span>租 赁 费：
+		                	<span>原价：
+		                		<fmt:formatNumber value="${requestScope.orderCarInfo.price}" type="currency" pattern="¥.00"/>
+		                	</span>
+	                		<span>打折后：
+	                			<span class="unitPrice">
+	                				<fmt:formatNumber value="${(requestScope.orderCarInfo.price * requestScope.orderCarInfo.discount) * 0.01}" type="currency" pattern=".00"/>
+	                			</span>
+	                			<input class="unitPriceReal" type="hidden" name="fee" value="" />
+	                		</span> × <span id="days"></span> = &yen; </span>
+	                	<span class="Money"></span>
+	                	
 	                </p>
 	                <p>
 	                	<input type="submit" class="L213" value="提&nbsp; 交"/>

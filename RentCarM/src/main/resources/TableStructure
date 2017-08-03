@@ -61,3 +61,5 @@ CREATE TABLE `Order` (
   CONSTRAINT `Order_CarInfo_FK` FOREIGN KEY (`carId`) REFERENCES `CarInfo` (`carId`),
   CONSTRAINT `fg_userid` FOREIGN KEY (`userid`) REFERENCES `Users` (`userid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+INSERT INTO `AdminUsers` VALUES (1,'admin','9fd54063a485d8a681b309b5e6a9b5cb014ec90305256747f4c70db6898a69b7');

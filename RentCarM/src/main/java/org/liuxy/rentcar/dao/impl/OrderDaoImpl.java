@@ -66,4 +66,19 @@ public class OrderDaoImpl extends BaseDao implements OrderDao {
 		return this.dataUpdate(sql, orderState, orderId);
 	}
 
+	@Override
+	public int addOrder(Order order) {
+		String sql = "INSERT INTO `Order` (userid, carId, getDate, reDate, getAddress, reAddress, fee, orderState) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+		return this.dataUpdate(sql,
+				order.getNormalUser(),
+				order.getCarInfo().getCarId(),
+				order.getGetDate(),
+				order.getReDate(),
+				order.getGetAddress(),
+				order.getReAddress(),
+				order.getFee(),
+				order.getOrderState()
+				);
+	}
+
 }

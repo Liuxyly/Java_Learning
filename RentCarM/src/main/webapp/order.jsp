@@ -3,6 +3,7 @@
 	String path = request.getContextPath();
 	String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path + "/";
 %>
+<%@ include file="validateUser.jsp" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -13,8 +14,8 @@
 <link type="text/css" rel="stylesheet" href="css/carCSS.css"/>
 <body>
 	<div class="Log1" align="right">
-    	<a href="index">回到首页</a> | 
-        <a href="">我的订单</a> | 
+    	<a href="index.jsp">回到首页</a> | 
+        <a href="orderCentre.jsp">我的订单</a> | 
     	<a href="">帮助中心</a> | 0411-88888888
     </div>
     <div class="TiTle" align="center">
@@ -68,13 +69,13 @@
                 <p><strong>还车地点：</strong>大连 解放广场</p>
             </div>
           	<div class="Or3">
-          		<a href="" id="or31">订单中心</a>
+          		<a href="orderCentre.jsp" id="or31">订单中心</a>
           	</div>
           	<div class="Or3">
-            	<a href="修改订单.html" id="or31">修改订单</a>
+            	<a href="alterOrder.jsp" id="or31">修改订单</a>
           	</div>
           	<div class="Or3">
-            	<a href="" id="or31">取消订单</a>
+            	<a href="cancelOrder.jsp" id="or31">取消订单</a>
           	</div>
           	<div class="Or3">
             	<a href="" id="or31">关闭订单</a>

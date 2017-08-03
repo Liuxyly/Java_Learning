@@ -31,4 +31,6 @@ public interface CarInfoDao {
 	int getCarInfoCountByCondition(List<String> levels, List<String> brands, List<String> prices, String stockOnlySort);
 	
 	InputStream getImgByCarId(Integer carId);
+	
+	int updateCarState(Integer carId, Integer carState);
 }

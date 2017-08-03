@@ -83,12 +83,8 @@
 			}
 		});
 		
-		$(".rentCar").on('click', function() {
-			alert("Test");
-		})
-		
 		$(document).on('click', 'input[disable!=disabled][class=rentCar]', function() {
-			var url = 'OrderServlet?opr=addOrder&carId=' + $(this).siblings("#carId").val();
+			var url = 'OrderServlet?opr=toOrder&carId=' + $(this).siblings("#carId").val() + "&userId=" + $("#userId").val();
 			location.href = url;
 		});
 	})
@@ -166,6 +162,9 @@
                 <div><%--选车按钮--%>
                     <div><input type="button" name="choiceCar" value="选&nbsp;车" id="submit1"></div>
                 </div>
+                <c:if test="${!empty sessionScope.normalUser}">
+            		<input id="userId" type="hidden" value="${sessionScope.normalUser.userId}"/>
+            	</c:if>
             </form>
         </div>
     </div>
