@@ -112,13 +112,18 @@ function delCatInfo($selectObj) {
 		},
 		dataType: 'json',
 		success: function(data) {
-			listCarInfo(data);
-			$("#pageNo").html(nextPage);
-			$("#pageTotle").html(data.total);
+			if (data.message == null) {
+				$selectObj.parent().parent().remove();
+				listCarInfo(data);
+				$("#pageNo").html(nextPage);
+				$("#pageTotle").html(data.total);
+			} else {
+				alert(data.message.w01);
+			}
 		}
 	});
 	
-	$selectObj.parent().parent().remove();
+	
 }
 
 function addCarTypeName() {
@@ -365,7 +370,7 @@ function listCarInfoDetail(data) {
 		// htmlStr += "<li><img src='images/homepage/'/>";
 		htmlStr += "<span>" + carInfo.carType.brand.brandName + "</span></li>";
 		htmlStr += "<li><img src='images/homepage/carInformation.png'/>";
-		htmlStr += "<span>" + carInfo.carJiegou + "/1.6自动</span></li>";
+		htmlStr += "<span>" + carInfo.carJiegou + "/"+ carInfo.carPailiang +"" + carInfo.carBox +"</span></li>";
 		htmlStr += "<li><img src='images/homepage/memberLimit.png'/>";
 		htmlStr += "<span>乘坐" + carInfo.carPeople + "人</span></li></ul></div>";
 		

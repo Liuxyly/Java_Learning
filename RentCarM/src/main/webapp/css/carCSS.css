@@ -169,7 +169,7 @@
 }
 
 #tab1 {
-	margin-top: 45px;
+	margin-top: 30px;
 }
 
 .tx1, .tx2 {
@@ -241,12 +241,6 @@
 	margin: -20px 0 0 15px;
 	background-color: #3E9EFF;
 	text-align: center;
-}
-
-#or31 {
-	text-decoration: none;
-	font-size: 18px;
-	line-height: 30px;
 }
 
 /*订单中心*/
@@ -873,4 +867,24 @@ input.rentCar {
 	width: 160px;
 	background: #06F;
 	font-size: 32px;
+}
+
+input.cancelRentCar, input.confirmRentCar, input.closeRentCar {
+	height: 30px;
+	width: 50px;
+	background: #06F;
+	font-size: 20px;
+}
+
+#or31 {
+	text-decoration: none;
+	font-size: 18px;
+	line-height: 30px;
+}
+
+#options, #orderTable {
+	margin-left: 40px;
+}
+td {
+	text-align: center;
 }

@@ -33,6 +33,10 @@
 		
 		initIndexPage();
 		
+		$("#submit1").click(function() {
+			choiceCar(1);
+		});
+		
 		options("level", "checkbox");
 		options("brand", "checkbox");
 		
@@ -77,6 +81,7 @@
 			
 			if (toPageNumber <= 0 || toPageNumber > totalPage) {
 				alert("请输入的正确的页数");
+				$("#toPageNumber").val("");
 				return;
 			} else {
 				choiceCar(toPageNumber);
@@ -104,6 +109,7 @@
 	       <span>
 	       	欢迎${sessionScope.normalUser.userName}登陆
 	       </span>
+	       <a href="UserAuthenticate?opr=exit">退出</a>
         </c:if>
     </div>
     <div>

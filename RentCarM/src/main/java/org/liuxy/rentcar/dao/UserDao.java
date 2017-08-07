@@ -9,4 +9,6 @@ public interface UserDao {
 	int delUser(User user);
 	int updateUser(User user);
 
+	void commitData();
+	void rollbackData();
 }

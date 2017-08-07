@@ -1,4 +1,5 @@
 <%@ page language="java" pageEncoding="UTF-8"%>
+<%@ page errorPage="error.jsp" %>
 <%
 	String path = request.getContextPath();
 	String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path + "/";
@@ -17,27 +18,8 @@
 
 <script type="text/javascript">
 	$(function(){
-		var location = (window.location+'').split('/');
-		var basePath = location[0]+'//'+location[2]+'/'+location[3];
-		$("input[name='newusername']").blur(function () {
-			if ($(this).val() != null && $(this).val() != '') {
-				$.ajax({
-					type: 'GET',
-					url: basePath + "/UserAuthenticate",
-					data: {
-						opr: "verifyUser",
-						userName: $(this).val()
-					},
-					success: function (returndata) {
-						if (returndata == 'true') {
-							$("#ajaxVerifyUserName").html("此用户名已被占用").css("color","red");
-						} else {
-							$("#ajaxVerifyUserName").html("此用户名可以使用").css("color","green");
-						}
-					}
-				});
-			}
-		});
+		var _location = (window.location+'').split('/');
+		var _basePath = location[0]+'//'+location[2]+'/'+location[3];
 		
 		$.validator.addMethod("isMobile", function(value, element) {
 			var length = value.length;
@@ -46,10 +28,27 @@
 		}, "请正确填写您的手机号码");
 		
 		$("#registerForm").validate({
+			errorPlacement: function(error, element) {  
+		         error.insertAfter(element);  
+		     }, 
 			rules: {
 				newusername: {
 					required: true,
-			        minlength: 4
+			        minlength: 4,
+			        remote:{
+			        	url: $("base").prop("href") + "UserAuthenticate",
+			        	type:"POST",
+			        	data: {
+							opr: "verifyUser",
+							userName: function(){return $("input[name='newusername']").val();}
+						},
+						dataFilter: function(data, type) {  
+		                      if (data == "false")
+		                          return true;
+		                      else  
+		                          return false;
+		                 }
+			        }
 				},
 				newuserpwd: {
 			        required: true,
@@ -71,7 +70,8 @@
 			messages:{
 				newusername: {
 					required: "请输入用户名",
-			        minlength: "用户名必需由四个字母组成"
+			        minlength: "用户名必需由四个字母组成",
+			        remote:"该用户名已被占用"
 				},
 				newuserpwd: {
 			        required: "请输入密码",
@@ -111,8 +111,7 @@
                 	<a href="login.jsp">登录</a>
                 </div>
             </div>
-        	<form action="UserAuthenticate" method="post" id="registerForm">
-        		<input type="hidden" name="opr" value="add"/>
+        	<form action="UserAuthenticate?opr=add" method="post" id="registerForm">
 	       		<div class="er2">
 	        		<p>
 	        			<label for="phonenumber">手 机 号：</label>
@@ -121,7 +120,6 @@
 	           		<p>
 	           			<label for="newusername">用 户 名：</label>
 	           			<input name="newusername" type="text" id="newusername" placeholder="请输入您的真实姓名" />
-	           			<label for="Er21" id="ajaxVerifyUserName"></label>
 	           		</p>
 	            	<p>
 	            		<label for="newuserpwd">密&nbsp;&nbsp; &nbsp;码：</label>

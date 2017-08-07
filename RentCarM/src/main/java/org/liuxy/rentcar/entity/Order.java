@@ -5,7 +5,7 @@ import java.util.Date;
 
 public class Order {
 	
-	private Integer orderId;
+	private Long orderId;
 	private CarInfo carInfo;
 	private Date getDate;
 	private Date reDate;
@@ -23,14 +23,14 @@ public class Order {
 	/**
 	 * @return the orderId
 	 */
-	public Integer getOrderId() {
+	public Long getOrderId() {
 		return orderId;
 	}
 
 	/**
 	 * @param orderId the orderId to set
 	 */
-	public void setOrderId(Integer orderId) {
+	public void setOrderId(Long orderId) {
 		this.orderId = orderId;
 	}
 

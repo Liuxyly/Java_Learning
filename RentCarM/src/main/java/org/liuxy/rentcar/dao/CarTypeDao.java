@@ -9,4 +9,7 @@ public interface CarTypeDao {
 	CarType findCarTypeBy(CarType carType);
 	List<CarType> findCarTypeByBrandId(Integer brandId);
 	CarType findCarType(CarType carType);
+	
+	void commitData();
+	void rollbackData();
 }

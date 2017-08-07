@@ -22,12 +22,26 @@ public class NormalUserServiceImpl implements NormalUserService {
 
 	@Override
 	public int register(User user) {
-		return userDao.addUserByUser(user);
+		
+		int row = userDao.addUserByUser(user);
+		if (row != 0) {
+			userDao.commitData();
+		} else {
+			userDao.rollbackData();
+		}
+		return row;
 	}
 
 	@Override
 	public int delUser(User user) {
-		return userDao.delUser(user);
+		int row = userDao.delUser(user);
+		
+		if (row != 0) {
+			userDao.commitData();
+		} else {
+			userDao.rollbackData();
+		}
+		return row;
 	}
 
 	@Override

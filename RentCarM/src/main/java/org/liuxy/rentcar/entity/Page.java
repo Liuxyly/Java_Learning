@@ -1,6 +1,7 @@
 package org.liuxy.rentcar.entity;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 
@@ -19,6 +20,8 @@ public class Page<T> {
 	private int endIndex; // 截止记录下标
 	
 	private List<T> pageList;
+	
+	private Map<String, String> message;
 
 	/**
 	 * 使用总记录数、当前页码构造
@@ -105,5 +108,19 @@ public class Page<T> {
 	 */
 	public void setPageList(List<T> pageList) {
 		this.pageList = pageList;
+	}
+
+	/**
+	 * @return the message
+	 */
+	public Map<String, String> getMessage() {
+		return message;
+	}
+
+	/**
+	 * @param message the message to set
+	 */
+	public void setMessage(Map<String, String> message) {
+		this.message = message;
 	}
 }

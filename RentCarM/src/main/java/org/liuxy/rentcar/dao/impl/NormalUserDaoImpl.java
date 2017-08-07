@@ -16,10 +16,9 @@ public class NormalUserDaoImpl extends BaseDao implements NormalUserDao {
 		NormalUser normalUser = null;
 		
 		if (user instanceof NormalUser) {
-			normalUser = (NormalUser)user;
 		
 			String sql = "select userid, userName, userPhone, userPwd from users where userName = ? and userPwd = ?";
-			ResultSet rs = this.dataQuery(sql, normalUser.getUserName(), normalUser.getUserPass());
+			ResultSet rs = this.dataQuery(sql, ((NormalUser) user).getUserName(), ((NormalUser) user).getUserPass());
 			
 			try {
 				// 必须要用next()类似迭代器

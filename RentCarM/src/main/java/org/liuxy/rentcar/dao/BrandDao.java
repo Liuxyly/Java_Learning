@@ -8,4 +8,7 @@ public interface BrandDao {
 	List<Brand> findAll();
 	int addBrand(String brandName);
 	Brand findBrandByName(Brand brand);
+	
+	void commitData();
+	void rollbackData();
 }

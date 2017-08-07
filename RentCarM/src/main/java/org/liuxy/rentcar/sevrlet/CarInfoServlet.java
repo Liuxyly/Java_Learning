@@ -8,6 +8,7 @@ import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -35,9 +36,11 @@ import org.liuxy.rentcar.entity.Page;
 import org.liuxy.rentcar.service.BrandService;
 import org.liuxy.rentcar.service.CarInfoService;
 import org.liuxy.rentcar.service.CarTypeService;
+import org.liuxy.rentcar.service.OrderService;
 import org.liuxy.rentcar.service.impl.BrandServiceImpl;
 import org.liuxy.rentcar.service.impl.CarInfoServiceImpl;
 import org.liuxy.rentcar.service.impl.CarTypeServiceImpl;
+import org.liuxy.rentcar.service.impl.OrderServiceImpl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -53,6 +56,7 @@ public class CarInfoServlet extends HttpServlet {
 	private CarInfoService carInfoService = new CarInfoServiceImpl();
 	private CarTypeService carTypeService = new CarTypeServiceImpl();
 	private BrandService brandService = new BrandServiceImpl();
+	private OrderService orderService = new OrderServiceImpl();
       
     /**
      * @see HttpServlet#HttpServlet()
@@ -316,19 +320,27 @@ public class CarInfoServlet extends HttpServlet {
 		Integer carId = Integer.parseInt(request.getParameter("carInfoId"));
 		Integer page = Integer.parseInt(request.getParameter("page"));
 		String brandNameVal = (String)request.getParameter("brandName");
+		PrintWriter out = response.getWriter();
 		
 		Brand brandtmp = null;
 		if (brandNameVal != null && !brandNameVal.equals("")) {
 			brandtmp = new Brand();
 			brandtmp.setBrandName(brandNameVal);
 		}
-		
-		carInfoService.deleteCarInfoByCarId(carId);
-		PrintWriter out = response.getWriter();
-		
-		Page<CarInfo> paging = carInfoService.listCarInfoByBrand(brandtmp, page, 6);
+		Page<CarInfo> paging = null;
+		if (orderService.findOrderByCarId(carId) == null) {
+			carInfoService.deleteCarInfoByCarId(carId);
+			paging = carInfoService.listCarInfoByBrand(brandtmp, page, 6);
+		} else {
+			paging = carInfoService.listCarInfoByBrand(brandtmp, page, 6);
+			Map<String, String> message = new HashMap<>();
+			message.put("w01", "该车辆已经被租用");
+			paging.setMessage(message);
+		}
 		
 		String carTypeOptions = JSONArray.toJSONString(paging);
+		System.out.println(carTypeOptions);
+		
 		out.print(carTypeOptions);
 		
 		out.close();

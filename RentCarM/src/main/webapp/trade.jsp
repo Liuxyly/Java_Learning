@@ -1,5 +1,7 @@
 <%@ page language="java" pageEncoding="UTF-8"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core"  prefix="c"%>
+<%@ page errorPage="error.jsp" %>
 <%
 	String path = request.getContextPath();
 	String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path + "/";
@@ -16,50 +18,45 @@
 <link type="text/css" rel="stylesheet" href="css/carCSS.css" />
 <script type="text/javascript" src="js/jquery.min.js" ></script>
 <script type="text/javascript" src="js/datedropper.min.js" ></script>
+<script type="text/javascript" src="js/jquery.validate.min.js"></script>
+<script type="text/javascript" src="js/messages_zh.min.js"></script>
+<script type="text/javascript" src="js/order.js"></script>
 <script type="text/javascript">
 	$(function () {
-		$(".date").dateDropper({format: 'y年m月d日', color: '#66c8bba', animation: 'bounce', maxYear: 2030});
+		$(".Date").dateDropper({format: 'y年m月d日', color: '#66c8bba', animation: 'bounce', maxYear: 2030});
 		
-		$(".tx1").change(toDate);
+		$(".tx1").change(fromDate);
 		
 		$(".tx2").change(toDate);
-	});
-	
-	function toDate() {
-		var getDateString = $(".tx1").val().replace(/[年月日]/g, "-").substr(0, 10);
-		var reDateString = $(".tx2").val().replace(/[年月日]/g, "-").substr(0, 10);
-		if (getDateString == "" || reDateString == "") {
-			return;
-		}
 		
-		var _getDate = new Date(getDateString).valueOf();
-		var _reDate = new Date(reDateString).valueOf();
-		
-		if (_getDate > _reDate) {
-			alert("取车时间和还车时间不正确");
-		} else if (_getDate == _reDate) {
-			days = 1;
-		} else {
-			var days = (_reDate - _getDate) / 86400000 + 1;
-		}
-		
-		$("#days").html(days);
-		
+		$("#days").html(1);
 		var unitPrice = parseFloat($(".unitPrice").html());
+		$(".Money").html(1 * unitPrice);
 		
-		$(".unitPriceReal").val(days * unitPrice);
+		$("#reset").click(function() {
+			$(".resetData").val("");
+		});
 		
-		$(".Money").html(days * unitPrice);
-	} 
-	
-	
-	
+		$("#tradeOrder").validate({
+			rules: {
+				getAddress: "required",
+				reAddress: "required"
+			},
+			messages:{
+				getAddress: "取车地点",
+				reAddress: "还车地点"
+			}
+		});
+	});
 </script>
 <body>
 	<div class="Log1" align="right">
-    	<a href="index">回到首页</a> | 
-    	<a href="orderCentre">订单中心</a> | 
-    	<a href="">帮助中心</a> | 0411-88888888
+    	<a href="index.jsp">回到首页</a> | 
+    	<a href="orderCentre.jsp">订单中心</a> | 
+    	<a href="">帮助中心</a> | 0411-88888888|
+    	<c:if test="${!empty sessionScope.normalUser}">
+	       <a href="UserAuthenticate?opr=exit">退出</a>
+        </c:if>
     </div>
     <div class="TiTle" align="center">
     	<span>Easy-Car</span>
@@ -71,12 +68,12 @@
         	<div class="Er11">
         		<span>车辆信息</span>
             	<div class="er12">
-                	<a href="">重选</a>
+                	<button id="reset" >重选</button>
                 </div>
             </div>
             <div class="tr1">
-            	<image id="img11" src="images/bieke1.png"/>
-                <image id="img11" src="images/bieke2.png"/>
+            	<!-- <img id="img11" src="images/bieke1.png"/> -->
+                <img id="img11" height="60%" width="60%" src="CarInfoServlet?opr=getImg&carId=${requestScope.orderCarInfo.carId }"/>
                 <table border="1px" height="40" width="440" cellpadding="0" cellspacing="0" id="tab1">
                 	<tr align="center">
                     	<td>${requestScope.orderCarInfo.carType.brand.brandName }&nbsp;${requestScope.orderCarInfo.carType.cartypeName }</td>
@@ -85,25 +82,25 @@
                     </tr>
                 </table>
             </div>
-            <form action="OrderServlet?opr=tradeOrder" method="post">
+            <form id="tradeOrder" action="OrderServlet?opr=tradeOrder" method="post">
             	<input name="carId" type="hidden" value="${requestScope.orderCarInfo.carId }"/>
             	<input name="userId" type="hidden" value="${sessionScope.normalUser.userId }"/>
 	            <div class="tr2">
 	            	<p>
 	            		<span>取车时间：</span>
-	            		<input name="getDate" type="text" class=" date tx1">
+	            		<input name="getDate" type="text" class="resetData Date tx1">
 	            	</p>
 	                <p>
 	                	<span>还车时间：</span>
-	                	<input name="reDate" type="text" class="date tx2">
+	                	<input name="reDate" type="text" class="resetData Date tx2">
 	                </p>
 	                <p>
 	                	<span>取车地点：</span>
-	                	<input name="getAddress" type="text" value="大连"/>
+	                	<input class="resetData" name="getAddress" type="text" value=""/>
 	                </p>
 	                <p>
 	                	<span>还车地点：</span>
-	                	<input name="reAddress" type="text" value="大连"/>
+	                	<input class="resetData" name="reAddress" type="text" value=""/>
 	                </p>
 	                <p>
 	                	<span>租 赁 费：

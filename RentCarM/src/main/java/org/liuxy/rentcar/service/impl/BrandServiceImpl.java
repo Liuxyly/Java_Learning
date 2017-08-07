@@ -22,7 +22,15 @@ public class BrandServiceImpl implements BrandService {
 
 	@Override
 	public int addBrandName(String brandName) {
-		return brandDao.addBrand(brandName);
+		int row = brandDao.addBrand(brandName);
+		
+		if (row != 0) {
+			brandDao.commitData();
+		} else {
+			brandDao.rollbackData();
+		}
+		
+		return row;
 	}
 
 	@Override

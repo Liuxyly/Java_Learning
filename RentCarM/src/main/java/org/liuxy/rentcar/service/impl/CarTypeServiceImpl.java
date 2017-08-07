@@ -21,7 +21,16 @@ public class CarTypeServiceImpl implements CarTypeService {
 
 	@Override
 	public int addCarType(CarType carType) {
-		return carTypeDao.addCarType(carType);
+		
+		int rows = carTypeDao.addCarType(carType);
+		
+		if (rows != 0) {
+			carTypeDao.commitData();
+		} else {
+			carTypeDao.rollbackData();
+		}
+		
+		return rows;
 	}
 
 	@Override

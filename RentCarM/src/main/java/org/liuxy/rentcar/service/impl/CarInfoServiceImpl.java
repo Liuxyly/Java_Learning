@@ -60,17 +60,44 @@ public class CarInfoServiceImpl implements CarInfoService {
 
 	@Override
 	public int deleteCarInfoByCarId(Integer carId) {
-		return carInfoDao.deleteCarInfoByCarID(carId);
+		
+		int rows = carInfoDao.deleteCarInfoByCarID(carId);
+		
+		if (rows != 0) {
+			carInfoDao.commitData();
+		} else {
+			carInfoDao.rollbackData();
+		}
+		
+		return rows;
 	}
 
 	@Override
 	public int addCarInfoNot(CarInfo carInfo) {
-		return carInfoDao.addCarInfo(carInfo);
+		
+		int rows = carInfoDao.addCarInfo(carInfo);
+		
+		if (rows != 0) {
+			carInfoDao.commitData();
+		} else {
+			carInfoDao.rollbackData();
+		}
+		
+		return rows;
 	}
 
 	@Override
 	public int updateCarInfoByCarId(CarInfo carInfo) {
-		return carInfoDao.updateCarInfo(carInfo);
+		
+		int rows = carInfoDao.updateCarInfo(carInfo);
+		
+		if (rows != 0) {
+			carInfoDao.commitData();
+		} else {
+			carInfoDao.rollbackData();
+		}
+		
+		return rows;
 	}
 
 	@Override

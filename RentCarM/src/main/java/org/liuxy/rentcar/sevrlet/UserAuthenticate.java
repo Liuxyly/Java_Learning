@@ -29,7 +29,7 @@ import org.liuxy.rentcar.service.impl.OrderServiceImpl;
  * Servlet implementation class UserAuthenticate
  */
 
-@WebServlet("/UserAuthenticate") 
+@WebServlet("/UserAuthenticate")
 public class UserAuthenticate extends HttpServlet {
 	private static final long serialVersionUID = 1L;
     
@@ -73,12 +73,20 @@ public class UserAuthenticate extends HttpServlet {
 		case "verifyUser":
 			verifyUser(request, response);
 			break;
+		case "exit":
+			exitSystem(request, response);
+			break;
 		default:
 			break;
 		}
 
 	}
 	
+	protected void exitSystem(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		request.getSession().invalidate();
+		response.sendRedirect("index.jsp");
+	}
+
 	protected void verifyUser(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String userName = request.getParameter("userName");
 		out = response.getWriter();
@@ -118,7 +126,7 @@ public class UserAuthenticate extends HttpServlet {
 			
 			response.sendRedirect("admin/login.jsp");
 		} else {
-			httpSession.setAttribute("orderList", orderService.listOrders());
+			
 			httpSession.setAttribute("brandNames", brandService.brandNameOptions());
 			httpSession.setAttribute("adminUser", userInfo);
 			response.sendRedirect("admin/index.jsp");

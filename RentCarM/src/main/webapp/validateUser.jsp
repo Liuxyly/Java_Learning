@@ -2,7 +2,5 @@
 <%
 	if (session.getAttribute("normalUser") == null) {
 		response.sendRedirect("login.jsp");
-	} else if (request.getAttribute("orderCarInfo") == null) {
-		response.sendRedirect("index.jsp");
 	}
  %>

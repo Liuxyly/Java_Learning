@@ -43,7 +43,7 @@ public class BaseDao {
 	
 	public Connection getConnection(){
 		
-		Context context = null;
+		// Context context = null;
 		
 		// Class.forName(driver);
 		// this.connection = DriverManager.getConnection(URL, user, passwd);
@@ -51,12 +51,28 @@ public class BaseDao {
 		// DataSource dataSource = (DataSource) context.lookup("java:comp/env/jdbc/rentCar");
 		// connection = dataSource.getConnection();
 		connection = DBManager.getConn();
+		
+		try {
+			connection.setAutoCommit(false);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		return this.connection;
+	}
+	
+	public void setConnection(Connection connection) {
+		this.connection = connection;
 	}
 	
 	public ResultSet dataQuery(String SQL, Object...parameters) {
 		try {
-			this.preparedStatement = this.getConnection().prepareStatement(SQL);
+			if (this.connection == null || this.connection.isClosed()) {
+				this.connection = this.getConnection();
+			}
+			
+			this.preparedStatement = this.connection.prepareStatement(SQL);
 			for (int i = 0, j = 0; i < parameters.length; i++) {
 				if (parameters[i] != null) {
 					j = j + 1;
@@ -70,43 +86,44 @@ public class BaseDao {
 		return this.resultSet;
 	}
 	
-	public ResultSet dataQueryByCondition(String SQL, HashMap<String, List<String>> condition, HashMap<String, List<String>> section, Page<?> page, boolean defaultSort, boolean RrlPriceSort) {
+	public ResultSet dataQueryByCondition(String SQL, HashMap<String, List<String>> condition, HashMap<String, List<String>> section, Page<?> page, List<String> orderBy) {
 		try {
-			
-			
 			StringBuffer sqlB = new StringBuffer(SQL);
 			
 			List<String> parameters = null;
 			
-			for (String conditionString : condition.keySet()) {
-				parameters = condition.get(conditionString);
-				
-				sqlB.append(" and ( 1 = 0 ");
-				for (int i = 0; i < parameters.size(); i++) {
-					sqlB.append(" or " + conditionString + " = ? ");
-				}
-				sqlB.append(" ) ");
-			}
-			
-			for (String sectionString : section.keySet()) {
-				parameters = section.get(sectionString);
-				if (Integer.parseInt(parameters.get(0)) != 0) {
-					sqlB.append(" and " + sectionString + " >= ? ");
-				}
-				if (Integer.parseInt(parameters.get(1)) != 0) {
-					sqlB.append(" and " + sectionString + " <= ? ");
+			if (condition != null && !condition.isEmpty()) {
+				for (String conditionString : condition.keySet()) {
+					parameters = condition.get(conditionString);
+					
+					sqlB.append(" and ( 1 = 0 ");
+					for (int i = 0; i < parameters.size(); i++) {
+						sqlB.append(" or " + conditionString + " = ? ");
+					}
+					sqlB.append(" ) ");
 				}
 			}
 			
-			if (RrlPriceSort && defaultSort) {
-				sqlB.append(" order by carId, realprice ");
-			} else {
-				if (defaultSort) {
-					sqlB.append(" order by carId ");
+			if (section != null && !section.isEmpty()) {
+				for (String sectionString : section.keySet()) {
+					parameters = section.get(sectionString);
+					if (Integer.parseInt(parameters.get(0)) != 0) {
+						sqlB.append(" and " + sectionString + " >= ? ");
+					}
+					if (Integer.parseInt(parameters.get(1)) != 0) {
+						sqlB.append(" and " + sectionString + " <= ? ");
+					}
 				}
-				
-				if (RrlPriceSort) {
-					sqlB.append(" order by realprice ");
+			}
+			
+			if (orderBy != null && !orderBy.isEmpty()) {
+				sqlB.append(" order by ");
+				for (int i = 0; i < orderBy.size(); i++) {
+					if (i == 0) {
+						sqlB.append(orderBy.get(i));
+					} else {
+						sqlB.append( ", " + orderBy.get(i));
+					}
 				}
 			}
 			
@@ -116,33 +133,41 @@ public class BaseDao {
 			
 			System.out.println(sqlB.toString());
 			
-			this.preparedStatement = this.getConnection().prepareStatement(sqlB.toString());
+			if (this.connection == null || this.connection.isClosed()) {
+				this.connection = this.getConnection();
+			}
+			
+			this.preparedStatement = this.connection.prepareStatement(sqlB.toString());
 			
 			int j = 1;
 			
-			for (String conditionString : condition.keySet()) {
-				parameters = condition.get(conditionString);
-				for (int i = 0; i < parameters.size(); i++) {
-					this.preparedStatement.setObject(j, parameters.get(i));
-					j++;
+			if (condition != null && !condition.isEmpty()) {
+				for (String conditionString : condition.keySet()) {
+					parameters = condition.get(conditionString);
+					for (int i = 0; i < parameters.size(); i++) {
+						this.preparedStatement.setObject(j, parameters.get(i));
+						j++;
+					}
 				}
 			}
 			
-			for (String sectionString : section.keySet()) {
-				parameters = section.get(sectionString);
-				if (Integer.parseInt(parameters.get(0)) != 0) {
-					this.preparedStatement.setObject(j, Double.parseDouble(parameters.get(0)));
-					j++;
-				}
-				if (Integer.parseInt(parameters.get(1)) != 0) {
-					this.preparedStatement.setObject(j, Double.parseDouble(parameters.get(1)));
-					j++;
+			if (section != null && !section.isEmpty()) {
+				for (String sectionString : section.keySet()) {
+					parameters = section.get(sectionString);
+					if (Integer.parseInt(parameters.get(0)) != 0) {
+						this.preparedStatement.setObject(j, Double.parseDouble(parameters.get(0)));
+						j++;
+					}
+					if (Integer.parseInt(parameters.get(1)) != 0) {
+						this.preparedStatement.setObject(j, Double.parseDouble(parameters.get(1)));
+						j++;
+					}
 				}
 			}
 			
 			if (page != null && page.getCount() > 0) {
 				this.preparedStatement.setObject(j, page.getBeginIndex());
-				this.preparedStatement.setObject(j + 1, page.getEndIndex());
+				this.preparedStatement.setObject(j + 1, page.getPageSize());
 			}
 			
 			this.resultSet = this.preparedStatement.executeQuery();
@@ -152,61 +177,48 @@ public class BaseDao {
 		return this.resultSet;
 	}
 	
-	public ResultSet runExecuteQuery(){
-		try {
-			this.resultSet = this.preparedStatement.executeQuery();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-		return this.resultSet;
-	}
-	
-//	public ResultSet dataQuery(String SQL, Page page, Object...parameters) {
-//		try {
-//			this.preparedStatement = this.getConnection().prepareStatement(SQL);
-//			this.preparedStatement.setMaxRows(page.getEndIndex());	//关键代码，设置最大记录数为当前页记录的截止下标
-//			for (int i = 0, j = 0; i < parameters.length; i++) {
-//				if (parameters[i] != null) {
-//					j = j + 1;
-//					this.preparedStatement.setObject(j, parameters[i]);
-//				}
-//			}
-//			this.resultSet = this.preparedStatement.executeQuery();
-//			
-//			if (page.getBeginIndex() > 0) {
-//				this.resultSet.absolute(page.getBeginIndex());//关键代码，直接移动游标为当前页起始记录处
-//			}
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//		}
-//		return this.resultSet;
-//	}
-	
 	public int dataUpdate(String SQL, Object...parameters) {
 		int rowNumber = 0;
 		try {
-			this.preparedStatement = this.getConnection().prepareStatement(SQL);
+			if (this.connection == null || this.connection.isClosed()) {
+				this.connection = this.getConnection();
+			}
+			
+			this.preparedStatement = this.connection.prepareStatement(SQL);
 			for (int i = 0, j = 0; i < parameters.length; i++) {
 				if (parameters[i] != null) {
 					j = j + 1;
 					this.preparedStatement.setObject((j), parameters[i]);
 				}
 			}
-//			int i = 0;
-//			for (Object object : parameters) {
-//				this.preparedStatement.setObject((i + 1), object);
-//			}
-			
 			rowNumber = this.preparedStatement.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return rowNumber;
+	}
+	
+	public void commitData() {
+		try {
+			this.connection.commit();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
 			this.closeAll();
 		}
-		
-		return rowNumber;
 	}
+	
+	public void rollbackData() {
+		try {
+			this.connection.rollback();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			this.closeAll();
+		}
+	}
+	
 	/**
 	 * 按照顺序关闭资源 
 	 * 

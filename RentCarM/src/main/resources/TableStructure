@@ -3,13 +3,13 @@ CREATE TABLE `AdminUsers` (
   `adminName` varchar(20) COLLATE utf8_unicode_ci NOT NULL COMMENT '用户名',
   `adminPwd` varchar(64) COLLATE utf8_unicode_ci NOT NULL COMMENT '密码',
   PRIMARY KEY (`adminId`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `Brand` (
   `brandId` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '品牌编号',
   `brandName` varchar(20) COLLATE utf8_unicode_ci NOT NULL COMMENT '品牌名称',
   PRIMARY KEY (`brandId`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `CarType` (
   `cartypeId` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '车型编号',
@@ -18,7 +18,7 @@ CREATE TABLE `CarType` (
   PRIMARY KEY (`cartypeId`),
   KEY `CarType_Brand_FK` (`brandId`),
   CONSTRAINT `CarType_Brand_FK` FOREIGN KEY (`brandId`) REFERENCES `Brand` (`brandId`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `CarInfo` (
   `carId` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '车辆编号',
@@ -35,7 +35,7 @@ CREATE TABLE `CarInfo` (
   PRIMARY KEY (`carId`),
   KEY `CarInfo_CarType_FK` (`cartypeId`),
   CONSTRAINT `CarInfo_CarType_FK` FOREIGN KEY (`cartypeId`) REFERENCES `CarType` (`cartypeId`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 
 CREATE TABLE `Users` (
   `userid` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '用户编号',
@@ -43,7 +43,7 @@ CREATE TABLE `Users` (
   `userPwd` varchar(64) COLLATE utf8_unicode_ci NOT NULL COMMENT '密码',
   `userPhone` varchar(20) COLLATE utf8_unicode_ci NOT NULL COMMENT '手机号',
   PRIMARY KEY (`userid`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `Order` (
   `orderId` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '订单号',
@@ -60,6 +60,6 @@ CREATE TABLE `Order` (
   KEY `Order_CarInfo_FK` (`carId`),
   CONSTRAINT `Order_CarInfo_FK` FOREIGN KEY (`carId`) REFERENCES `CarInfo` (`carId`),
   CONSTRAINT `fg_userid` FOREIGN KEY (`userid`) REFERENCES `Users` (`userid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=14000 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 
 INSERT INTO `AdminUsers` VALUES (1,'admin','9fd54063a485d8a681b309b5e6a9b5cb014ec90305256747f4c70db6898a69b7');

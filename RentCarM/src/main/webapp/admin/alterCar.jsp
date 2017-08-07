@@ -19,6 +19,8 @@
 	<script type="text/javascript">
 		$(function () {
 			
+			$("#carJibie").val($("#carJibieVal").val());
+			
 			if ($("#carJibieVal").val() != "") {
 				$("#carJibie").find("option[value="+ $("#carJibieVal").val() +"]").attr("selected",true);
 			}
@@ -41,6 +43,21 @@
 				
 				return this.optional(element) || flag;
 			}, "请输入正确折扣");
+			
+			$("#alterCatInfoForm :input").change(function() {
+			     $("#alterCatInfoForm").data("changed",true);
+			});
+			
+			$.validator.setDefaults({  
+		        submitHandler: function() {  
+		        	if ($("#alterCatInfoForm").data("changed")) {
+						return true;
+		        	} else {
+		        		alert("请更改页面或后退");
+		        		return false;
+		        	}
+		        }  
+		    });  
 			
 			$("#alterCatInfoForm").validate({
 				rules: {
@@ -97,7 +114,11 @@
 	            		<select id="brandName" name="brandName" class="brandNameC" onchange="brandNameChange()">
 	            			<option value="-1">--请输入品牌--</option>
 	            			<c:forEach items="${sessionScope.brandNames }" var="brand">
-	            				<option value="${brand.brandId }" >${brand.brandName }</option>
+	            				<option value="${brand.brandId }" 
+	            					<c:if test="${brand.brandId eq requestScope.carInfo.carType.brand.brandId }">
+	            						selected = "selected"
+	            					</c:if>
+	            				>${brand.brandName }</option>
 	            			</c:forEach>
 	            		</select>
 	            		<!-- <input name="brandName" type="text" id="Er21"  placeholder="请输入品牌" /> -->
@@ -130,7 +151,11 @@
 	                	<select id="cartypeName" name="cartypeName" class="brandNameC" onfocus="cartypeNameChange()">
 	            			<option value="-1">--请输入型号--</option>
 	            			<c:forEach items="${requestScope.carType }" var="carType">
-	            				<option value="${carType.cartypeId }" >${carType.cartypeName }</option>
+	            				<option value="${carType.cartypeId }"
+	            					<c:if test="${carType.cartypeId eq requestScope.carInfo.carType.cartypeId }">
+	            						selected = "selected"
+	            					</c:if>
+	            				>${carType.cartypeName }</option>
 	            			</c:forEach>
 	            		</select>
 	            		<input type="button" value="添加型号" onclick="addCarType()" />

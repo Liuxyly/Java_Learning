@@ -1,6 +1,7 @@
 package org.liuxy.rentcar.dao;
 
 import java.io.InputStream;
+import java.sql.Connection;
 import java.util.List;
 
 import org.liuxy.rentcar.entity.Brand;
@@ -8,7 +9,7 @@ import org.liuxy.rentcar.entity.CarInfo;
 import org.liuxy.rentcar.entity.Page;
 import org.liuxy.rentcar.entity.User;
 
-public interface CarInfoDao {
+public interface CarInfoDao extends Connectable {
 
 	int updateCarInfo(CarInfo carInfo);
 	
@@ -33,4 +34,7 @@ public interface CarInfoDao {
 	InputStream getImgByCarId(Integer carId);
 	
 	int updateCarState(Integer carId, Integer carState);
+	
+	void commitData();
+	void rollbackData();
 }

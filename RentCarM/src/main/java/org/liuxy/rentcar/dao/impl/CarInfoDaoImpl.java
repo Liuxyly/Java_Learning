@@ -1,6 +1,7 @@
 package org.liuxy.rentcar.dao.impl;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -28,6 +29,14 @@ public class CarInfoDaoImpl extends BaseDao implements CarInfoDao {
 		String sql = "UPDATE CarInfo "
 				+ " SET cartypeId = ?, carJibie = ?, carJiegou = ?, carPailiang = ?, carBox = ?, carPeople = ?, price = ?, discount = ?, carImg = ?, carState = ?"
 				+ " WHERE carId= ?";
+		
+		try {
+			if (carInfo.getImageData().available() == 0) {
+				carInfo.setImageData(this.getImgByCarId(carInfo.getCarId()));
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		
 		return this.dataUpdate(sql,
 				carInfo.getCarType().getCartypeId(),
@@ -253,7 +262,17 @@ public class CarInfoDaoImpl extends BaseDao implements CarInfoDao {
 			sectionMap.put("price", (List<String>)prices);
 		}
 		
-		rs = this.dataQueryByCondition(sqlB.toString(), condetionMap, sectionMap, page, Boolean.parseBoolean(defaultSort), Boolean.parseBoolean(RrlPriceSort));
+		List<String> orderBy = new ArrayList<>();
+		
+		if (Boolean.parseBoolean(defaultSort)) {
+			orderBy.add("carId");
+		}
+		
+		if (Boolean.parseBoolean(RrlPriceSort)) {
+			orderBy.add("realprice");
+		}
+		
+		rs = this.dataQueryByCondition(sqlB.toString(), condetionMap, sectionMap, page, orderBy);
 		
 		List<CarInfo> list = new ArrayList<>();
 		
@@ -331,7 +350,7 @@ public class CarInfoDaoImpl extends BaseDao implements CarInfoDao {
 			sectionMap.put("price", (List<String>)prices);
 		}
 		
-		rs = this.dataQueryByCondition(sqlB.toString(), condetionMap, sectionMap, null, false, false);
+		rs = this.dataQueryByCondition(sqlB.toString(), condetionMap, sectionMap, null, null);
 		
 		int count = 0;
 		
