@@ -296,7 +296,15 @@ function choiceCar(pageNumber) {
 	var dailyRateFrom = parseInt($("input[name=dailyRateFrom]").val());
 	var dailyRateTo = parseInt($("input[name=dailyRateTo]").val());
 	
-	if ((dailyRateFrom != 0 || dailyRateTo != 0) && !isNaN(dailyRateFrom) && !isNaN(dailyRateTo)) {
+	if (isNaN(dailyRateFrom)) {
+		dailyRateFrom = 0;
+	}
+	
+	if (isNaN(dailyRateTo)) {
+		dailyRateTo = 0;
+	}
+	
+	if (dailyRateFrom != 0 || dailyRateTo != 0) {
 		pageData.price = [dailyRateFrom, dailyRateTo];
 	}
 	
