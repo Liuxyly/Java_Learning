@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+	<class name="org.liuxy.pojo.Student" table="student">
+		<id name="studentNo" column="studentNo">
+			<generator class="identity"></generator>
+		</id>
+		<property name="loginPwd" column="loginPwd" type="java.lang.String"/>
+		<property name="studentName" column="studentName" type="java.lang.String"/>
+		<property name="sex" column="sex" type="java.lang.Integer"/>
+		<property name="gradeID" column="gradeID" type="java.lang.Long"/>
+		<property name="phone" column="phone" type="java.lang.String"/>
+		<property name="address" column="address" type="java.lang.String"/>
+		<property name="bornDate" column="bornDate" type="java.util.Date"/>
+		<property name="email" column="email" type="java.lang.String"/>
+		<property name="identityCard" column="identityCard" type="java.lang.String"/>
+	</class>
+</hibernate-mapping>

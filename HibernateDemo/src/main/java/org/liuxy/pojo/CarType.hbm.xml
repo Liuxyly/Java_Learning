@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+	<class name="org.liuxy.pojo.CarType" table="CarType">
+		<composite-id>
+			<key-property name="cartypeId" column="cartypeId" type="java.lang.Long"/>
+			<key-property name="brandId" column="brandId" type="java.lang.Long"/>
+		</composite-id>
+		<property name="cartypeName" column="cartypeName" type="java.lang.String"/>
+	</class>
+</hibernate-mapping>
