@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 2017-9-12 19:43:37 by Hibernate Tools 3.6.0.Final -->
+<hibernate-mapping>
+    <class name="org.homwork.pojo.Classes" table="classes" catalog="Student">
+        <id name="classid" type="java.lang.Integer" column="classid">
+            <generator class="identity" />
+        </id>
+        <property name="name" type="string">
+            <column name="name" length="50" not-null="true">
+                <comment>&#231;&#143;&#173;&#231;&#186;&#167;&#229;&#144;&#141;&#231;&#167;&#176;</comment>
+            </column>
+        </property>
+        
+        <set name="students" table="student" cascade="save-update" inverse="true">
+        	<key column="classid"/>
+        	<one-to-many entity-name="org.homwork.pojo.Student" />
+        </set>
+    </class>
+</hibernate-mapping>

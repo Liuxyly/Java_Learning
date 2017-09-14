@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 2017-9-12 19:43:37 by Hibernate Tools 3.6.0.Final -->
+<hibernate-mapping>
+    <class name="org.homwork.pojo.Student" table="student" catalog="Student">
+        <id name="id" type="java.lang.Integer" column="id">
+        	<generator class="identity"/>
+        </id>
+        <property name="name" type="string">
+            <column name="name" length="50" not-null="true">
+                <comment>&#229;&#173;&#166;&#229;&#145;&#152;&#229;&#144;&#141;&#231;&#167;&#176;</comment>
+            </column>
+        </property>
+        <property name="age" type="int">
+            <column name="age" not-null="true">
+                <comment>&#229;&#173;&#166;&#229;&#145;&#152;&#229;&#185;&#180;&#233;&#190;&#132;</comment>
+            </column>
+        </property>
+        <property name="gender" type="string">
+            <column name="gender" length="20" not-null="true">
+                <comment>&#230;&#128;&#167;&#229;&#136;&#171;</comment>
+            </column>
+        </property>
+        <property name="telephone" type="string">
+            <column name="telephone" length="50" not-null="true">
+                <comment>&#231;&#148;&#181;&#232;&#175;&#157;</comment>
+            </column>
+        </property>
+        <property name="email" type="string">
+            <column name="email" length="50" not-null="true">
+                <comment>email</comment>
+            </column>
+        </property>
+        <many-to-one name="classes" column="classid" class="org.homwork.pojo.Classes"/>
+    </class>
+</hibernate-mapping>

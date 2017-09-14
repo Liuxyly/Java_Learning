@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="false" scanPeriod="60 seconds" debug="false">
+    <!-- log输出目录 -->
+    <property name="LOG_HOME" value="../logs" />
+    <!-- 项目名称 -->
+    <property name="APP_NAME" value="Struts2Demo" />
+    
+    <!-- 控制台和文件的日志格式 -->
+    <!-- %method和%line性能较低，如果不太介意打印的方法和行号，强烈建议取消 -->
+    <property name="CONSOLE_LOG_PATTERN" value="%date{HH:mm:ss.SSS}[%-5level]%logger.%method#%line - %msg%n" />
+    <property name="FILE_LOG_PATTERN" value="%date{HH:mm:ss.SSS}[%-5level]%logger.%method#%line - %msg%n" />
+    
+    <logger name="org.springframework" level="ERROR" />
+    <logger name="org.springframework.web" level="ERROR" />
+    <logger name="org.springframework.security" level="ERROR" />
+    <logger name="org.springframework.cache" level="ERROR" />
+    <logger name="org.springframework.beans" level="ERROR" />
+    <logger name="com.shunneng.logtest" level="DEBUG" />
+    <!-- 输出日志到控制台 -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        
+        <!-- 控制台输出性能较低。只打印ERRROR,其他信息从日志或者elasticsearch查询 -->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        
+        <encoder>
+            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+            <charset>utf8</charset>
+        </encoder>
+    </appender>
+    
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+	    <layout class="ch.qos.logback.classic.PatternLayout">
+		<pattern>
+			----------- %d{HH:mm:ss.SSS} [%thread] %-5level [%F:%L] - %msg ===============> %n
+		</pattern>
+	    </layout>
+	</appender>
+	
+    <!-- 输出日志到文件  -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    
+        <!-- 文件名称 -->
+        <file>${LOG_HOME}/${APP_NAME}.log</file>
+        
+        <!-- 编码字符集和日志格式 -->
+        <encoder>
+            <charset>utf-8</charset>
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+        </encoder>
+        
+        <!-- 日志过大后，滚动输出日志 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+            <fileNamePattern>${LOG_HOME}/${APP_NAME}.%i.log</fileNamePattern>
+        </rollingPolicy>
+        
+        <!-- 限定单日志大小 -->
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <MaxFileSize>100MB</MaxFileSize>
+        </triggeringPolicy>
+        
+    </appender>
+    
+    <!-- 异步批量(512)打印日志，在异常关闭时，有可能会有部分日志丢失 -->
+    <appender name="ASYNC" class="ch.qos.logback.classic.AsyncAppender">
+        <queueSize>512</queueSize>
+        <appender-ref ref="FILE" />
+    </appender>
+    
+    <!-- 允许动态修改日志级别 -->
+    <contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
+        <resetJUL>true</resetJUL>
+    </contextListener>
+    
+    <!-- 默认输出INFO级别日志 -->
+    <root level="DEBUG">
+        <appender-ref ref="STDOUT" />
+        <appender-ref ref="FILE" />
+    </root>
+</configuration>

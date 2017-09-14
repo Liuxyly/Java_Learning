@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+<struts>
+	<!-- <include file="struts-default.xml"/> -->
+	<constant name="struts.devMode" value="true" />
+	
+	<package name="studentRoot" namespace="/" extends="struts-default">
+		<default-action-ref name="notFound" />
+		<action name="notFound">
+    		<result>/error.jsp</result>
+		</action>
+		<action name="list" class="org.homwork.action.StudentAction" method="listStudent">
+			<result name="listStudent">
+				/listStudentInfo.jsp
+			</result>
+		</action>
+		<action name="*Student" class="org.homwork.action.StudentAction" method="{1}">
+			<result type="redirect">
+				/list
+			</result>
+		</action>
+		<action name="toAdd" class="org.homwork.action.StudentAction" method="toAdd">
+			<result>
+				/add.jsp
+			</result>
+		</action>
+	</package>
+</struts>
